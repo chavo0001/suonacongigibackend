@@ -9,6 +9,7 @@
             "env": {
                 "DB_USERNAME": "root",
                 "DB_PASSWORD": "Matteo@2026",
+
                 "JWT_SECRET": "SuonaConGigiSuperSecretKey2026JAVITA152!!!"
             }
         }
