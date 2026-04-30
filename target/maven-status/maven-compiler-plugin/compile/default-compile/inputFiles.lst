@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 C:\Users\matte\Desktop\Github suonacongigi\suonacongigibackend\src\main\java\it\generation\suonacongigi\bootstrap\DatabaseSeeder.java
 C:\Users\matte\Desktop\Github suonacongigi\suonacongigibackend\src\main\java\it\generation\suonacongigi\config\OpenApiConfig.java
 C:\Users\matte\Desktop\Github suonacongigi\suonacongigibackend\src\main\java\it\generation\suonacongigi\config\SecurityConfig.java
@@ -70,72 +69,3 @@ C:\Users\matte\Desktop\Github suonacongigi\suonacongigibackend\src\main\java\it\
 C:\Users\matte\Desktop\Github suonacongigi\suonacongigibackend\src\main\java\it\generation\suonacongigi\service\UserService.java
 C:\Users\matte\Desktop\Github suonacongigi\suonacongigibackend\src\main\java\it\generation\suonacongigi\SuonaConGigiApplication.java
 C:\Users\matte\Desktop\Github suonacongigi\suonacongigibackend\src\main\java\it\generation\suonacongigi\util\PageableUtils.java
-=======
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\bootstrap\DatabaseSeeder.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\config\OpenApiConfig.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\config\SecurityConfig.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\controller\ArtistController.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\controller\AuthController.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\controller\BaseController.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\controller\EventController.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\controller\ForumController.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\controller\GenreController.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\controller\GlobalExceptionHandler.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\controller\InstrumentController.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\controller\UserController.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\artist\ArtistRequest.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\artist\ArtistResponse.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\auth\AuthResponse.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\auth\LoginRequest.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\auth\RegisterRequest.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\common\ApiEnvelope.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\event\EventRequest.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\event\EventResponse.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\forum\CategoryResponse.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\forum\PostRequest.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\forum\PostResponse.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\forum\ThreadDetailResponse.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\forum\ThreadRequest.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\forum\ThreadSummaryResponse.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\genre\GenreRequest.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\genre\GenreResponse.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\instrument\InstrumentRequest.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\instrument\InstrumentResponse.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\user\MusicalProfileRequest.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\user\MusicalProfileResponse.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\dto\user\UserResponse.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\model\Artist.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\model\Event.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\model\EventRegistration.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\model\ForumCategory.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\model\ForumThread.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\model\Genre.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\model\Instrument.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\model\MusicalProfile.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\model\Post.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\model\User.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\repository\ArtistRepository.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\repository\event\EventRegistrationRepository.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\repository\event\EventRepository.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\repository\forum\ForumCategoryRepository.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\repository\forum\ForumThreadRepository.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\repository\forum\PostRepository.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\repository\GenreRepository.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\repository\InstrumentRepository.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\repository\package-info.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\repository\user\MusicalProfileRepository.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\repository\user\UserRepository.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\security\JwtAuthFilter.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\security\JwtUtil.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\security\UserDetailsServiceImpl.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\service\ArtistService.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\service\AuthService.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\service\EventService.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\service\ForumService.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\service\GenreService.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\service\InstrumentService.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\service\package-info.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\service\UserService.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\SuonaConGigiApplication.java
-C:\Dev\Workspace\suonacongigi\src\main\java\it\generation\suonacongigi\util\PageableUtils.java
->>>>>>> develop

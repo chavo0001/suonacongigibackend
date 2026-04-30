@@ -25,8 +25,20 @@ public class EventService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public List<EventResponse> findAll(@Nullable String currentUsername) {
-        List<Event> events = eventRepository.findByEventDateAfterOrderByEventDateAsc(LocalDateTime.now());
+    public List<EventResponse> findAll(@Nullable String currentUsername, @Nullable String search) {
+        // Se viene fornito un termine di ricerca, filtriamo gli eventi in base a titolo, descrizione o location.
+        LocalDateTime now = LocalDateTime.now();
+
+        List<Event> events;
+
+        if (search == null || search.isBlank()) {
+            events = eventRepository.findByEventDateAfterOrderByEventDateAsc(now);
+        } else {
+            events = eventRepository.searchFutureEvents(now, search);// Il metodo searchFutureEvents è definito nel repository e utilizza
+            //  una query personalizzata per filtrare gli eventi in base al termine di ricerca.
+        }
+
+
         return Objects.requireNonNull(events.stream()
                 .map(e -> toResponse(Objects.requireNonNull(e), currentUsername))
                 .collect(Collectors.toList()));

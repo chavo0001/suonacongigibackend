@@ -1,4 +1,16 @@
 {
-    "java.compile.nullAnalysis.mode": "automatic",
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.compile.nullAnalysis.mode":  "automatic",
+    "java.configuration.updateBuildConfiguration":  "interactive",
+    "java.jdt.ls.java.home":  "C:\\Users\\matte\\.jdks\\ms-21.0.10",
+    "java.configuration.runtimes":  [
+                                        {
+                                            "path":  "C:\\Users\\matte\\.jdks\\ms-21.0.10",
+                                            "default":  true,
+                                            "name":  "JavaSE-21"
+                                        }
+                                    ],
+    "terminal.integrated.env.windows":  {
+                                            "JAVA_HOME":  "C:\\Users\\matte\\.jdks\\ms-21.0.10",
+                                            "Path":  "C:\\Users\\matte\\.jdks\\ms-21.0.10\\bin;${env:Path}"
+                                        }
 }

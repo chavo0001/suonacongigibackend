@@ -1,17 +1,18 @@
 {
-    "configurations": [
-        {
-            "type": "java",
-            "name": "SuonaConGigiApplication",
-            "request": "launch",
-            "mainClass": "it.generation.suonacongigi.SuonaConGigiApplication",
-            "projectName": "suona-gigi",
-            "env": {
-                "DB_USERNAME": "root",
-                "DB_PASSWORD": "Matteo@2026",
-
-                "JWT_SECRET": "SuonaConGigiSuperSecretKey2026JAVITA152!!!"
-            }
-        }
-    ]
+    "configurations":  [
+                           {
+                               "type":  "java",
+                               "name":  "SuonaConGigiApplication",
+                               "request":  "launch",
+                               "mainClass":  "it.generation.suonacongigi.SuonaConGigiApplication",
+                               "projectName":  "suona-gigi",
+                               "env":  {
+                                           "DB_USERNAME":  "root",
+                                           "DB_PASSWORD":  "Matteo@2026",
+                                           "JWT_SECRET":  "SuonaConGigiSuperSecretKey2026JAVITA152!!!",
+                                           "JAVA_HOME":  "C:\\Users\\matte\\.jdks\\ms-21.0.10"
+                                       },
+                               "javaExec":  "C:\\Users\\matte\\.jdks\\ms-21.0.10\\bin\\java.exe"
+                           }
+                       ]
 }

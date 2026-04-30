@@ -34,7 +34,11 @@ public class EventController extends BaseController {
         @ApiResponse(responseCode = "500", description = "Errore interno del server")
     })
     @GetMapping
-    public ResponseEntity<ApiEnvelope<List<EventResponse>>> getAll(@AuthenticationPrincipal User user) {
+    public ResponseEntity<ApiEnvelope<List<EventResponse>>> getAll(
+        @AuthenticationPrincipal User user,
+        @RequestParam(required = false) String search) { // Il parametro di ricerca è opzionale e permette di filtrare gli eventi in base a parole chiave. 
+        // Se non viene fornito, vengono restituiti tutti gli eventi a cui l'utente ha accesso (o tutti quelli pubblici se l'utente non è autenticato).
+
         // Se l'utente è autenticato, passiamo il suo username al servizio per filtrare gli eventi in base ai permessi. 
         // Se l'utente non è autenticato, passiamo null e il servizio restituirà solo gli eventi pubblici.
         String username = user != null ? user.getUsername() : null;
@@ -42,7 +46,7 @@ public class EventController extends BaseController {
         // Il servizio si occupa di applicare la logica di filtraggio degli eventi in base all'utente. 
         // Gli utenti autenticati vedono solo gli eventi a cui hanno accesso, 
         // mentre gli utenti non autenticati vedono solo quelli pubblici.
-        List<EventResponse> data = eventService.findAll(username);
+        List<EventResponse> data = eventService.findAll(username, search);
 
         return ok(data, "Lista degli eventi recuperata con successo");
     }

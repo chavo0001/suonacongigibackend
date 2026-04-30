@@ -3,6 +3,8 @@ package it.generation.suonacongigi.repository.event;
 import it.generation.suonacongigi.model.Event; 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -25,4 +27,19 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     // evitando così il problema N+1 query quando si accede ai dati dell'organizzatore associato a ciascun evento.
     @EntityGraph(attributePaths = {"createdBy"})
     List<Event> findByEventDateAfterOrderByEventDateAsc(LocalDateTime date);
+    
+    @EntityGraph(attributePaths = {"createdBy"}) // Anche in questo caso, carichiamo l'organizzatore insieme agli eventi filtrati.
+    @Query("""
+            SELECT e
+            FROM Event e
+            WHERE e.eventDate > :date
+            AND (
+                LOWER(e.title) LIKE LOWER(CONCAT('%', :search, '%'))
+                OR LOWER(e.description) LIKE LOWER(CONCAT('%', :search, '%'))
+                OR LOWER(e.location) LIKE LOWER(CONCAT('%', :search, '%'))
+            )
+            ORDER BY e.eventDate ASC
+            """)
+    List<Event> searchFutureEvents(LocalDateTime date, String search);
+
 }
