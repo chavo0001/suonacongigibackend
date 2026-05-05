@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- 
+    ARCHITETTURA: Spring Boot Parent.
+    Il 'parent' agisce come un Bill of Materials (BOM). Definisce le versioni certificate
+    di tutte le dipendenze interne, garantendo che non ci siano conflitti tra librerie.
+  -->
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.4.2</version> 
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+
+  <groupId>it.generationitaly</groupId>
+  <artifactId>suona-gigi</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>suona-gigi</name>
+  <description>Suona con Gigi – Project Work JAVITA152</description>
+
+  <properties>
+    <!-- MECCANICA: Modern Runtime. Usiamo l'ultima LTS (Long Term Support) per performance e Virtual Threads. -->
+    <java.version>21</java.version>
+    <!-- RILEVANTE: Gestione centralizzata della versione per la suite JJWT. -->
+    <jjwt.version>0.12.6</jjwt.version> 
+  </properties>
+
+  <dependencies>
+    <!-- ARCHITETTURA: RESTful Web Stack. Include Tomcat embedded e Jackson per la serializzazione JSON. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- ARCHITETTURA: Security Engine. Il motore che gestisce la Filter Chain e il SecurityContext. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+    </dependency>
+
+    <!-- ARCHITETTURA: Persistence Layer. Integra Hibernate (ORM) e il Transaction Manager. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+
+    <!-- MECCANICA: Bean Validation. Implementazione JSR-303 per validare i DTO con @Valid. -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+
+    <!-- RILEVANTE: Driver JDBC. Scope 'runtime' perché il codice Java interagisce solo tramite l'interfaccia JDBC. -->
+    <dependency>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- 
+      ARCHITETTURA: JJWT Stack. 
+      L'architettura è divisa in API (interfaccia), Impl (logica) e Jackson (supporto JSON).
+    -->
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-api</artifactId>
+      <version>${jjwt.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-impl</artifactId>
+      <version>${jjwt.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-jackson</artifactId>
+      <version>${jjwt.version}</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- MECCANICA: Annotation Processing. Riduce il boilerplate (getter/setter) via Reflection a compile-time. -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <!-- STRUMENTI DI TEST -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- ARCHITETTURA: OpenAPI 3 / Swagger. Generazione automatica della documentazione dai Controller. -->
+    <dependency>
+      <groupId>org.springdoc</groupId>
+      <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+      <version>2.8.4</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- 
+        MECCANICA: Repackage Plugin. 
+        Prende il codice compilato e le dipendenze, impacchettandole in un "Fat Jar" eseguibile.
+      -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <excludes>
+            <!-- Escludiamo Lombok dal JAR finale: non serve a runtime. -->
+            <exclude>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+            </exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
