@@ -1,6 +1,7 @@
 package it.generation.suonacongigi.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,7 +31,9 @@ public class User implements UserDetails {
     private String username;
 
     // Il campo "email" rappresenta l'indirizzo email dell'utente. 
-    // È obbligatorio, deve essere unico e ha una lunghezza massima di 100 caratteri.   
+    // È obbligatorio, deve essere unico e ha una lunghezza massima di 100 caratteri.  
+    @NonNull
+    @Email 
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
@@ -63,6 +66,10 @@ public class User implements UserDetails {
 
     @Builder.Default
     private boolean status = false;
+
+    public boolean getStatus(){
+        return this.status;
+    }
 
     // L'enum Role rappresenta i possibili ruoli di un utente: USER e ADMIN.
     public enum Role {

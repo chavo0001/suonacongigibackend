@@ -40,4 +40,5 @@ public class UserResponse {
     // Il campo "musicalProfile" rappresenta i dettagli del profilo musicale dell'utente. È facoltativo.
     @Schema(description = "Dettagli del profilo musicale (generi, strumenti, artisti)")
     private MusicalProfileResponse musicalProfile;
+
 }

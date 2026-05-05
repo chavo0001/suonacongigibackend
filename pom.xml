@@ -44,7 +44,11 @@
       <artifactId>spring-boot-starter-mail</artifactId>
     </dependency>
 
-
+    <!-- Thymeleaf Java Template engine server side -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-thymeleaf</artifactId>
+    </dependency>
 
     <!-- ARCHITETTURA: Security Engine. Il motore che gestisce la Filter Chain e il SecurityContext. -->
     <dependency>
