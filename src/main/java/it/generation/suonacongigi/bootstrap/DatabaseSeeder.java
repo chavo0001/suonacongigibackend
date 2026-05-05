@@ -46,6 +46,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final PostRepository postRepository;
     private final PasswordEncoder passwordEncoder;
     private final DataSource dataSource;
+    private final EmailTemplateRepository emailTemplateRepository;
 
     @Value("${app.db.seed-on-start:false}")
     private boolean shouldSeed;
@@ -116,7 +117,16 @@ public class DatabaseSeeder implements CommandLineRunner {
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "user_id VARCHAR(50) NOT NULL UNIQUE, " +
                 "token VARCHAR(250), " +
-                "expires_at TIMESTAMP) ENGINE=InnoDB");    
+                "expires_at TIMESTAMP) ENGINE=InnoDB");   
+                
+                
+            // EmailTemplate
+            stmt.execute("CREATE TABLE email_template ("          +
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "name VARCHAR(50) NOT NULL UNIQUE, " +
+                "sender VARCHAR(100) NOT NULL, " +
+                "subject VARCHAR(100) NOT NULL, " +
+                "content TEXT) ENGINE=InnoDB");     
 
             // Profili Musicali (Relazioni 1:1 e N:M)
             stmt.execute("CREATE TABLE musical_profiles (" +
@@ -329,6 +339,11 @@ public class DatabaseSeeder implements CommandLineRunner {
             createPost("Vero, però ho provato dei software che generano progressioni armoniche incredibili. Forse l'AI sarà solo il 'nuovo sintetizzatore': all'inizio lo odiano tutti, poi diventa lo standard.", t2, jazzer);
             createPost("Finché un robot non spacca una chitarra sul palco dopo un feedback assordante, per me non è musica! 🎸", t2, rocker);
 
+            creatEmailTemplate("verification", "<h2>Benvenuto!</h2> <p>Clicca sul link qui sotto per completare la registrazione:</p> <a href=\"{{link}}\" style=\"color: blue; font-weight: bold;\">Verifica il tuo account</a> <p>Hai 24 ore per completare la verifica.</p>", "noreply@suonacongigi.it", "Conferma la tua mail");
+
+
+
+
             System.out.println("***************************************************************");
             System.out.println("[SUONA CON GIGI-BOOTSTRAP] Seeding completato: 62 anagrafiche, 4 utenti e 3 profili creati.");
             System.out.println("***************************************************************");
@@ -396,4 +411,10 @@ public class DatabaseSeeder implements CommandLineRunner {
         postRepository.save(Post.builder()
                 .content(content).thread(thread).author(author).createdAt(LocalDateTime.now()).build());
     }
+
+    private void creatEmailTemplate(String name, String content, String sender, String subject){
+        emailTemplateRepository.save(EmailTemplate.builder()
+                .name(name).sender(sender).subject(subject).content(content).build());
+    }
+
 }

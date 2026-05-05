@@ -107,6 +107,10 @@ public class AuthService {
             throw new IllegalStateException("Il principal autenticato non è un'istanza di User");
         }
 
+        if(!user.getStatus()){
+            throw new IllegalStateException("Devi verificare la mail!");
+        }
+
         String token = Objects.requireNonNull(jwtUtil.generateToken(user));
 
         return toAuthResponse(user, token);
