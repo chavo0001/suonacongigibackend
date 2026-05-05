@@ -1,0 +1,16 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "SuonaConGigiApplication",
+            "request": "launch",
+            "mainClass": "it.generation.suonacongigi.SuonaConGigiApplication",
+            "projectName": "suona-gigi",
+            "env": {
+                "DB_USERNAME": "root",
+                "DB_PASSWORD": "YourStrongPassword123!",
+                "JWT_SECRET": "SuonaConGigiSuperSecretKey2026JAVITA152!!!"
+            }
+        }
+    ]
+}
