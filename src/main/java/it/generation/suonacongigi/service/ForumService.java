@@ -22,6 +22,7 @@ public class ForumService {
     private final ForumThreadRepository threadRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final CensuraService censuraService;
 
     @Transactional(readOnly = true)
     public List<CategoryResponse> getCategories() {
@@ -35,7 +36,7 @@ public class ForumService {
         Long cleanId = Objects.requireNonNull(categoryId);
         return Objects.requireNonNull(threadRepository.findByCategoryIdOrderByCreatedAtDesc(cleanId)
                 .stream()
-                .map(this::toThreadSummary)
+                .map(t -> toThreadSummary(t, true))
                 .collect(Collectors.toList()));
     }
     
@@ -52,12 +53,12 @@ public class ForumService {
         List<ForumSearchResultResponse> titleMatches = threadRepository.searchThreads(cleanSearch)
                 .stream()
                 .filter(thread -> thread.getTitle().toLowerCase().contains(cleanSearch.toLowerCase()))
-                .map(thread -> toSearchResult(thread, null, thread.getTitle(), "TITLE"))
+                .map(thread -> toSearchResult(thread, null, thread.getTitle(), "TITLE", true))
                 .collect(Collectors.toList());
 
         List<ForumSearchResultResponse> postMatches = postRepository.searchPosts(cleanSearch)
                 .stream()
-                .map(post -> toSearchResult(post.getThread(), post.getId(), post.getContent(), "POST"))
+                .map(post -> toSearchResult(post.getThread(), post.getId(), post.getContent(), "POST", true))
                 .collect(Collectors.toList());
 
         titleMatches.addAll(postMatches);
@@ -73,14 +74,17 @@ public class ForumService {
         ForumThread thread = threadRepository.findWithGraphById(cleanId)
                 .orElseThrow(() -> new NoSuchElementException("Thread non trovato"));
 
+        boolean censuraAttiva = resolveCensura(currentUsername);
+
         List<PostResponse> posts = Objects.requireNonNull(postRepository.findByThreadIdOrderByCreatedAtAsc(cleanId).stream()
-                .map(p -> toPostResponse(Objects.requireNonNull(p), currentUsername))
+                .map(p -> toPostResponse(Objects.requireNonNull(p), currentUsername, censuraAttiva))
                 .collect(Collectors.toList()));
 
         return Objects.requireNonNull(ThreadDetailResponse.builder()
                 .id(thread.getId())
-                .title(Objects.requireNonNull(thread.getTitle()))
-                .categoryName(Objects.requireNonNull(thread.getCategory().getName()))
+                .title(censuraService.filtraSeNecessario(Objects.requireNonNull(thread.getTitle()), censuraAttiva))
+                .categoryName(censuraService.filtraSeNecessario(
+                        Objects.requireNonNull(thread.getCategory().getName()), censuraAttiva))
                 .posts(posts)
                 .build());
     }
@@ -107,7 +111,7 @@ public class ForumService {
 
         postRepository.save(Objects.requireNonNull(postToSave));
 
-        return toThreadSummary(Objects.requireNonNull(thread));
+        return toThreadSummary(Objects.requireNonNull(thread), author.isCensuraAttiva());
     }
 
     @Transactional
@@ -124,7 +128,7 @@ public class ForumService {
 
         Post saved = postRepository.save(Objects.requireNonNull(postToSave));
 
-        return toPostResponse(Objects.requireNonNull(saved), username);
+        return toPostResponse(Objects.requireNonNull(saved), username, author.isCensuraAttiva());
     }
 
     @Transactional
@@ -141,16 +145,18 @@ public class ForumService {
 
     // --- Mapper Certificati (Strict Null Safety) ---
 
-    private ForumSearchResultResponse toSearchResult(ForumThread thread, Long matchedPostId, String snippet, String matchType) {
+    private ForumSearchResultResponse toSearchResult(
+            ForumThread thread, Long matchedPostId, String snippet, String matchType, boolean censuraAttiva) {
         return Objects.requireNonNull(ForumSearchResultResponse.builder()
             .threadId(Objects.requireNonNull(thread.getId()))
-            .title(Objects.requireNonNull(thread.getTitle()))
-            .categoryName(Objects.requireNonNull(thread.getCategory().getName()))
+            .title(censuraService.filtraSeNecessario(Objects.requireNonNull(thread.getTitle()), censuraAttiva))
+            .categoryName(censuraService.filtraSeNecessario(
+                    Objects.requireNonNull(thread.getCategory().getName()), censuraAttiva))
             .authorName(Objects.requireNonNull(thread.getAuthor().getUsername()))
             .createdAt(thread.getCreatedAt())
             .postCount(postRepository.countByThreadId(thread.getId()))
             .matchedPostId(matchedPostId)
-            .snippet(snippet)
+            .snippet(censuraService.filtraSeNecessario(snippet, censuraAttiva))
             .matchType(matchType)
             .build());
     }
@@ -160,31 +166,43 @@ public class ForumService {
         Long id = Objects.requireNonNull(c.getId());
         return Objects.requireNonNull(CategoryResponse.builder()
                 .id(id)
-                .name(Objects.requireNonNull(c.getName()))
-                .description(c.getDescription())
+                .name(censuraService.filtraSeNecessario(Objects.requireNonNull(c.getName()), true))
+                .description(c.getDescription() != null
+                        ? censuraService.filtraSeNecessario(c.getDescription(), true)
+                        : null)
                 .threadCount(threadRepository.countByCategoryId(id))
                 .build());
     }
 
-    private ThreadSummaryResponse toThreadSummary(ForumThread t) {
+    private ThreadSummaryResponse toThreadSummary(ForumThread t, boolean censuraAttiva) {
         return Objects.requireNonNull(ThreadSummaryResponse.builder()
                 .id(Objects.requireNonNull(t.getId()))
-                .title(Objects.requireNonNull(t.getTitle()))
+                .title(censuraService.filtraSeNecessario(Objects.requireNonNull(t.getTitle()), censuraAttiva))
                 .authorName(Objects.requireNonNull(t.getAuthor().getUsername()))
-                .categoryName(Objects.requireNonNull(t.getCategory().getName()))
+                .categoryName(censuraService.filtraSeNecessario(
+                        Objects.requireNonNull(t.getCategory().getName()), censuraAttiva))
                 .createdAt(t.getCreatedAt())
                 .postCount(postRepository.countByThreadId(t.getId()))
                 .build());
     }
 
-    private PostResponse toPostResponse(Post p, @Nullable String currentUsername) {
+    private PostResponse toPostResponse(Post p, @Nullable String currentUsername, boolean censuraAttiva) {
         return Objects.requireNonNull(PostResponse.builder()
                 .id(Objects.requireNonNull(p.getId()))
-                .content(Objects.requireNonNull(p.getContent()))
+                .content(censuraService.filtraSeNecessario(Objects.requireNonNull(p.getContent()), censuraAttiva))
                 .authorName(Objects.requireNonNull(p.getAuthor().getUsername()))
                 .createdAt(p.getCreatedAt())
                 .canEdit(currentUsername != null && p.getAuthor().getUsername().equals(currentUsername))
                 .build());
+    }
+
+    private boolean resolveCensura(@Nullable String username) {
+        if (username == null) {
+            return true;
+        }
+        return userRepository.findByUsername(username)
+                .map(User::isCensuraAttiva)
+                .orElse(true);
     }
 
     private User getUserOrThrow(String username) {

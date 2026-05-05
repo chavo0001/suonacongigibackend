@@ -67,6 +67,10 @@ public class User implements UserDetails {
     @Builder.Default
     private boolean status = false;
 
+    @Builder.Default
+    @Column(name = "censura_attiva", nullable = false)
+    private boolean censuraAttiva = true;
+
     public boolean getStatus(){
         return this.status;
     }

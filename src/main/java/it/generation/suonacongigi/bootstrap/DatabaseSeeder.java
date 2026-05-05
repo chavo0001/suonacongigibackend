@@ -44,6 +44,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final ForumCategoryRepository forumCategoryRepository;
     private final ForumThreadRepository forumThreadRepository;
     private final PostRepository postRepository;
+    private final ParolaBanditaRepository parolaBanditaRepository;
     private final PasswordEncoder passwordEncoder;
     private final DataSource dataSource;
     private final EmailTemplateRepository emailTemplateRepository;
@@ -95,7 +96,8 @@ public class DatabaseSeeder implements CommandLineRunner {
                 "password VARCHAR(255) NOT NULL, "       +
                 "role VARCHAR(20) NOT NULL, "            +
                 "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "+
-                "status BOOLEAN) ENGINE=InnoDB");
+                "status BOOLEAN, " +
+                "censura_attiva BOOLEAN NOT NULL DEFAULT TRUE) ENGINE=InnoDB");
 
             // Dominio dei Generi Musicali
             stmt.execute("CREATE TABLE genres ("         + 
@@ -234,6 +236,15 @@ public class DatabaseSeeder implements CommandLineRunner {
                 "FOREIGN KEY (author_id) "                         + 
                 "REFERENCES users(id)) ENGINE=InnoDB");
 
+            stmt.execute("CREATE TABLE parole_bandite (" +
+                "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
+                "word VARCHAR(100) NOT NULL UNIQUE, " +
+                "category VARCHAR(50), " +
+                "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
+                "updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, " +
+                "INDEX idx_word (word)) " +
+                "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+
             System.out.println("*******************************************************************************");
             System.out.println("[SUONA CON GIGI-BOOTSTRAP]: Schema ricostruito. Seeding eseguito correttamente.");
             System.out.println("*******************************************************************************");
@@ -340,6 +351,7 @@ public class DatabaseSeeder implements CommandLineRunner {
             createPost("Vero, però ho provato dei software che generano progressioni armoniche incredibili. Forse l'AI sarà solo il 'nuovo sintetizzatore': all'inizio lo odiano tutti, poi diventa lo standard.", t2, jazzer);
             createPost("Finché un robot non spacca una chitarra sul palco dopo un feedback assordante, per me non è musica! 🎸", t2, rocker);
 
+            seedParoleBandite();
             creatEmailTemplate("verification", "<h2>Benvenuto!</h2> <p>Clicca sul link qui sotto per completare la registrazione:</p> <a href=\"{{link}}\" style=\"color: blue; font-weight: bold;\">Verifica il tuo account</a> <p>Hai 24 ore per completare la verifica.</p>", "noreply@suonacongigi.it", "Conferma la tua mail");
 
 
@@ -356,6 +368,74 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     // HELPER per la creazione delle entità User, per mantenere il codice DRY e leggibile. 
     // Ogni metodo incapsula la logica di salvataggio e gestione delle relazioni.
+    private void seedParoleBandite() {
+        try {
+            String[] parole = {
+                    "cazzo", "cazzi", "minchia", "coglione", "stronzo",
+                    "fanculo", "vaffanculo", "merdone", "bastardo", "figlio di puttana",
+                    "puttana", "troia", "merda", "merde", "cagare", "culo",
+                    "figa", "fottuto", "fottiti", "porco dio", "porca miseria",
+                    "porca madonna", "madonna", "dio cane", "dio porco",
+                    "spastico", "ritardato", "coglioni", "cazzata", "cazzate", "stronzata",
+                    "stronzate", "fottuta", "fottute", "sborra", "inculo", "minchione",
+                    "minkia", "cagata", "puttanata", "troiata", "merdata",
+                    "merdoso", "bastardata", "figli di puttana", "figlia di puttana", "cazzone",
+                    "cazzoni", "stronzone", "stronzoni", "fottuti",
+                    "porcodio", "negro", "negri", "zingaro", "zingari", "frocio", "froci",
+                    "ricchione", "ricchioni", "Generation", "Italy", "Stupidotto", "Brutto",
+                    "Brutta", "Brutti", "Brutte", "Scemo", "Scema", "Scemi", "Sceme",
+                    "Idiota", "Idiotessa", "Idioti", "Idiotesse", "Cretino", "Cretina", "Cretini",
+                    "Cretine", "Deficiente", "Deficientessa", "Deficienti",
+                    "Imbecille", "Imbecilla", "Imbecilli", "Pazzo", "Pazza", "Pazzi",
+                    "Pazze", "Matto", "Matta", "Matti", "Matte", "Scemo del villaggio",
+                    "Scema del villaggio", "Scemi del villaggio", "Sceme del villaggio",
+                    "Testa di cazzo", "Testa di minchia", "Testa di stronzo", "Testa di coglione",
+                    "Testa di merda", "Testa di cazzi", "Testa di minchioni", "Testa di stronzoni",
+                    "Testa di coglioni", "Testa di merdoso", "Figlio di puttanata",
+                    "Figlio di troia", "Figlio di merda", "Figlio di bastardata",
+                    "Figlio di figli di puttana", "Figlio di figlia di puttana",
+                    "Cazzo di cane", "Cazzo di porco", "Cazzo di dio", "Cazzo di madonna",
+                    "Cazzo di merda", "Vaffanculo di cane", "Vaffanculo di porco",
+                    "Vaffanculo di dio", "stupido", "stupida", "stupidi", "stupide",
+                    "brutto", "brutta", "brutti", "brutte", "scemo", "scema", "scemi",
+                    "sceme", "idiota", "idiotessa", "idioti", "idiotesse", "cretino",
+                    "cretina", "cretini", "cretine", "deficiente", "deficientessa",
+                    "deficienti", "imbecille", "imbecilla", "imbecilli", "pazzo",
+                    "pazza", "pazzi", "pazze", "matto", "matta", "matti", "matte",
+                    "scemo del villaggio", "scema del villaggio", "scemi del villaggio",
+                    "sceme del villaggio", "testa di cazzo", "testa di minchia",
+                    "testa di stronzo", "testa di coglione", "testa di merda",
+                    "testa di cazzi", "testa di minchioni", "testa di stronzoni",
+                    "testa di coglioni", "testa di merdoso", "figlio di puttanata",
+                    "figlio di troia", "figlio di merda", "figlio di bastardata",
+                    "figlio di figli di puttana", "figlio di figlia di puttana",
+                    "cazzo di cane", "cazzo di porco", "cazzo di dio", "cazzo di madonna",
+                    "cazzo di merda", "vaffanculo di cane", "vaffanculo di porco",
+                    "vaffanculo di dio", "vaffanculo di madonna", "vaffanculo di merda"
+            };
+
+            int inserite = 0;
+            for (String parola : parole) {
+                if (!parolaBanditaRepository.existsByWordIgnoreCase(parola)) {
+                    parolaBanditaRepository.save(
+                            ParolaBandita.builder()
+                                    .word(parola)
+                                    .category("Insulto")
+                                    .build());
+                    inserite++;
+                }
+            }
+
+            if (inserite > 0) {
+                System.out.println("[CENSURA]: Dizionario popolato con " + inserite + " nuovi termini.");
+            } else {
+                System.out.println("[CENSURA]: Dizionario gia aggiornato.");
+            }
+        } catch (Exception e) {
+            System.err.println("[AVVISO CENSURA]: Tabella non pronta, seeding rimandato: " + e.getMessage());
+        }
+    }
+
     private User createUser(String username, String email, User.Role role) {
         return userRepository.save(User.builder()
                 .username(username).email(email).role(role)
