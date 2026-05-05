@@ -3,6 +3,8 @@ package it.generation.suonacongigi.repository.forum;
 import it.generation.suonacongigi.model.Post;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository; 
+import org.springframework.data.jpa.repository.Query;
+
 import java.util.List;
 
 // Il repository PostRepository estende JpaRepository per fornire operazioni CRUD sull'entità Post.
@@ -16,6 +18,17 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     // evitando così il problema N+1 query quando si accede ai dati dell'autore associato a ciascun post.
     @EntityGraph(attributePaths = {"author"})
     List<Post> findByThreadIdOrderByCreatedAtAsc(Long threadId);
+
+    // Cerca post in tutto il forum.
+    @EntityGraph(attributePaths = {"author", "thread", "thread.author", "thread.category"})
+    @Query("""
+            SELECT p
+            FROM Post p
+            WHERE LOWER(p.content) LIKE LOWER(CONCAT('%', :search, '%'))
+            ORDER BY p.createdAt DESC
+            """)
+    List<Post> searchPosts(String search);
+
 
     // Il metodo countByThreadId restituisce il numero di post per un dato thread, identificato dal suo ID.
     long countByThreadId(Long threadId);

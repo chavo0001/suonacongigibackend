@@ -45,6 +45,21 @@ public class ForumController extends BaseController {
         return ok(data, "Lista categorie recuperata con successo");
     }
 
+    @Operation(summary = "Cerca nel forum", description = "Cerca discussioni per titolo o contenuto dei post.") 
+    @ApiResponses({ 
+        @ApiResponse(responseCode = "200", description = "Ricerca completata con successo"), 
+        @ApiResponse(responseCode = "500", description = "Errore interno del server")
+    })
+    @GetMapping("/search") // Endpoint pubblico per cercare discussioni nel forum tramite una query di ricerca.
+    public ResponseEntity<ApiEnvelope<List<ForumSearchResultResponse>>> searchThreads(
+            @RequestParam String search) {
+        List<ForumSearchResultResponse> data = forumService.searchThreads(search); // Il controller si limita a delegare la logica di ricerca dei thread al service
+
+
+        return ok(data, "Ricerca forum completata con successo");
+    }
+
+
     // Endpoint pubblico per ottenere la lista dei thread appartenenti a una specifica categoria tramite ID.
     @Operation(summary = "Thread per categoria")
     @ApiResponses({
