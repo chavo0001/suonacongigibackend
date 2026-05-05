@@ -1,0 +1,1483 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [ 4 0 R 6 0 R 8 0 R 10 0 R 12 0 R 14 0 R 16 0 R 18 0 R 20 0 R 22 0 R 24 0 R ] /Count 11 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 5 0 R >>
+endobj
+5 0 obj
+<< /Length 2479 >>
+stream
+BT
+/F1 9.5 Tf
+12 TL
+48 794 Td
+(PROCESSO SEARCHBAR EVENTI E FORUM) Tj
+T*
+() Tj
+T*
+(Documento di supporto al merge delle modifiche fatte su backend e frontend.) Tj
+T*
+() Tj
+T*
+(OBIETTIVO GENERALE) Tj
+T*
+() Tj
+T*
+(Abbiamo introdotto la ricerca in due aree dell'applicazione:) Tj
+T*
+() Tj
+T*
+(- pagina Eventi;) Tj
+T*
+(- pagina Forum.) Tj
+T*
+() Tj
+T*
+(La ricerca Eventi filtra gli eventi futuri in base a titolo, descrizione o luogo.) Tj
+T*
+() Tj
+T*
+(La ricerca Forum e piu articolata: cerca sia nei titoli delle discussioni sia nel contenuto) Tj
+T*
+(dei post/commenti, mostra uno snippet del contenuto trovato ed evidenzia visivamente la parola) Tj
+T*
+(cercata.) Tj
+T*
+() Tj
+T*
+(BACKEND - EVENTI) Tj
+T*
+() Tj
+T*
+(EventController.java) Tj
+T*
+() Tj
+T*
+(E stata modificata la route che restituisce gli eventi.) Tj
+T*
+() Tj
+T*
+(Prima la route GET /api/events caricava semplicemente la lista degli eventi.) Tj
+T*
+() Tj
+T*
+(Ora accetta anche un parametro opzionale:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(@RequestParam\(required = false\) String search) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Questo significa che la stessa API puo essere chiamata in due modi:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(GET /api/events) Tj
+T*
+(GET /api/events?search=rock) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Se search non viene passato, il comportamento rimane quello originale.) Tj
+T*
+() Tj
+T*
+(Se search viene passato, il controller lo inoltra al service.) Tj
+T*
+() Tj
+T*
+(EventService.java) Tj
+T*
+() Tj
+T*
+(Nel service e stata aggiunta la logica decisionale.) Tj
+T*
+() Tj
+T*
+(Il metodo che carica gli eventi ora controlla il valore di search:) Tj
+T*
+() Tj
+T*
+(- se search e null, vuoto o composto solo da spazi, vengono caricati normalmente tutti gli) Tj
+T*
+(eventi futuri;) Tj
+T*
+(- se search contiene testo, viene chiamato il repository con la query di ricerca.) Tj
+T*
+() Tj
+T*
+(La logica segue questo schema mentale:) Tj
+T*
+() Tj
+T*
+(1. Il controller riceve il parametro dalla richiesta HTTP.) Tj
+T*
+(2. Il service decide quale comportamento applicare.) Tj
+T*
+(3. Il repository esegue la query sul database.) Tj
+T*
+() Tj
+T*
+(Questo mantiene il controller leggero e sposta la logica applicativa nel service.) Tj
+T*
+() Tj
+T*
+(EventRepository.java) Tj
+T*
+() Tj
+T*
+ET
+
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 7 0 R >>
+endobj
+7 0 obj
+<< /Length 2306 >>
+stream
+BT
+/F1 9.5 Tf
+12 TL
+48 794 Td
+(Nel repository e stata aggiunta una query custom per cercare negli eventi futuri.) Tj
+T*
+() Tj
+T*
+(La ricerca controlla:) Tj
+T*
+() Tj
+T*
+(- titolo;) Tj
+T*
+(- descrizione;) Tj
+T*
+(- luogo.) Tj
+T*
+() Tj
+T*
+(La query mantiene il filtro sugli eventi futuri, quindi non restituisce eventi passati.) Tj
+T*
+() Tj
+T*
+(E stato mantenuto anche:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(@EntityGraph\(attributePaths = {"createdBy"}\)) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Questo serve a caricare subito anche l'utente che ha creato l'evento, evitando problemi di) Tj
+T*
+(lazy loading o query aggiuntive non necessarie.) Tj
+T*
+() Tj
+T*
+(FRONTEND - EVENTI) Tj
+T*
+() Tj
+T*
+(event.service.ts) Tj
+T*
+() Tj
+T*
+(Il metodo getAll\(\) e stato modificato per accettare un parametro opzionale search.) Tj
+T*
+() Tj
+T*
+(Quando search contiene testo, il service lo manda al backend come query parameter.) Tj
+T*
+() Tj
+T*
+(Schema:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(getAll\(search?: string\)) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Se la ricerca e vuota, viene chiamata la lista normale.) Tj
+T*
+() Tj
+T*
+(Se la ricerca contiene testo, viene chiamato:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(/api/events?search=...) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(events-list.component.ts) Tj
+T*
+() Tj
+T*
+(Nel componente della lista eventi e stato aggiunto uno stato per la searchbar.) Tj
+T*
+() Tj
+T*
+(Sono stati introdotti:) Tj
+T*
+() Tj
+T*
+(- searchTerm, cioe il testo scritto dall'utente;) Tj
+T*
+(- un metodo per reagire al cambio testo;) Tj
+T*
+(- il reload degli eventi passando la ricerca al service.) Tj
+T*
+() Tj
+T*
+(Il flusso e:) Tj
+T*
+() Tj
+T*
+(1. L'utente scrive nella searchbar.) Tj
+T*
+(2. Il componente aggiorna searchTerm.) Tj
+T*
+(3. Il componente richiama il service.) Tj
+T*
+(4. Il service chiama il backend.) Tj
+T*
+(5. La pagina mostra solo gli eventi filtrati.) Tj
+T*
+() Tj
+T*
+(events-list.component.html) Tj
+T*
+() Tj
+T*
+(Nel template e stato aggiunto l'input della searchbar nella pagina Eventi.) Tj
+T*
+ET
+
+endstream
+endobj
+8 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 9 0 R >>
+endobj
+9 0 obj
+<< /Length 2272 >>
+stream
+BT
+/F1 9.5 Tf
+12 TL
+48 794 Td
+() Tj
+T*
+(L'input e collegato al metodo del componente che aggiorna la ricerca.) Tj
+T*
+() Tj
+T*
+(events-list.component.css) Tj
+T*
+() Tj
+T*
+(Sono stati aggiunti gli stili della searchbar.) Tj
+T*
+() Tj
+T*
+(BACKEND - FORUM) Tj
+T*
+() Tj
+T*
+(La ricerca Forum e stata prima implementata in modo semplice e poi migliorata.) Tj
+T*
+() Tj
+T*
+(L'obiettivo finale non era solo sapere quale thread contiene una parola, ma mostrare anche) Tj
+T*
+(dove e stata trovata.) Tj
+T*
+() Tj
+T*
+(Per questo e stato creato un DTO dedicato.) Tj
+T*
+() Tj
+T*
+(ForumSearchResultResponse.java) Tj
+T*
+() Tj
+T*
+(E stato aggiunto il DTO:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(ForumSearchResultResponse) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Questo oggetto rappresenta un singolo risultato di ricerca.) Tj
+T*
+() Tj
+T*
+(Campi principali:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(threadId) Tj
+T*
+(title) Tj
+T*
+(categoryName) Tj
+T*
+(authorName) Tj
+T*
+(createdAt) Tj
+T*
+(postCount) Tj
+T*
+(matchedPostId) Tj
+T*
+(snippet) Tj
+T*
+(matchType) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Significato dei campi:) Tj
+T*
+() Tj
+T*
+(- threadId: id della discussione da aprire;) Tj
+T*
+(- title: titolo della discussione;) Tj
+T*
+(- categoryName: categoria del thread;) Tj
+T*
+(- authorName: autore del thread;) Tj
+T*
+(- createdAt: data di creazione;) Tj
+T*
+(- postCount: numero di risposte/post nel thread;) Tj
+T*
+(- matchedPostId: id del post dove e stata trovata la parola, se il match e dentro un post;) Tj
+T*
+(- snippet: testo da mostrare come anteprima del risultato;) Tj
+T*
+(- matchType: indica se il match e nel TITLE o in un POST.) Tj
+T*
+() Tj
+T*
+(Questo DTO evita di mandare al frontend tutta l'entita ForumThread o Post, e restituisce solo) Tj
+T*
+(i dati necessari alla UI.) Tj
+T*
+() Tj
+T*
+(ForumController.java) Tj
+T*
+() Tj
+T*
+(Il controller espone la ricerca forum tramite una route simile a:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(GET /api/forum/search?search=robot) Tj
+T*
+(----------------------------------------) Tj
+T*
+ET
+
+endstream
+endobj
+10 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 11 0 R >>
+endobj
+11 0 obj
+<< /Length 2583 >>
+stream
+BT
+/F1 9.5 Tf
+12 TL
+48 794 Td
+() Tj
+T*
+(La risposta non e piu una semplice lista di thread summary, ma una lista di) Tj
+T*
+(ForumSearchResultResponse.) Tj
+T*
+() Tj
+T*
+(Questo permette al frontend di distinguere:) Tj
+T*
+() Tj
+T*
+(- risultati trovati nel titolo;) Tj
+T*
+(- risultati trovati nel contenuto dei post.) Tj
+T*
+() Tj
+T*
+(ForumService.java) Tj
+T*
+() Tj
+T*
+(Nel service e stata aggiunta la logica centrale della ricerca.) Tj
+T*
+() Tj
+T*
+(Il metodo di ricerca:) Tj
+T*
+() Tj
+T*
+(1. prende la stringa cercata;) Tj
+T*
+(2. la pulisce con trim\(\);) Tj
+T*
+(3. se e vuota, ritorna List.of\(\);) Tj
+T*
+(4. cerca i thread con titolo corrispondente;) Tj
+T*
+(5. cerca i post con contenuto corrispondente;) Tj
+T*
+(6. converte entrambi i tipi di risultato in ForumSearchResultResponse;) Tj
+T*
+(7. unisce i risultati e li restituisce.) Tj
+T*
+() Tj
+T*
+(E stato usato:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(@Transactional\(readOnly = true\)) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Significa che il metodo apre una transazione di sola lettura.) Tj
+T*
+() Tj
+T*
+(Serve per dire a Spring/Hibernate che quel metodo legge dati ma non li modifica.) Tj
+T*
+() Tj
+T*
+(Vantaggi:) Tj
+T*
+() Tj
+T*
+(- rende piu chiara l'intenzione del metodo;) Tj
+T*
+(- puo aiutare Hibernate a ottimizzare;) Tj
+T*
+(- evita modifiche accidentali gestite come operazioni di scrittura.) Tj
+T*
+() Tj
+T*
+(Nel service e stato anche aggiunto un helper mapper, cioe un metodo privato che prende un) Tj
+T*
+(thread/post e costruisce il DTO ForumSearchResultResponse.) Tj
+T*
+() Tj
+T*
+(Questo mantiene pulito il metodo principale e centralizza la costruzione della risposta.) Tj
+T*
+() Tj
+T*
+(ForumThreadRepository.java) Tj
+T*
+() Tj
+T*
+(Nel repository dei thread e stata aggiunta una query custom.) Tj
+T*
+() Tj
+T*
+(La query cerca nei titoli dei thread e nei post collegati.) Tj
+T*
+() Tj
+T*
+(E stata scelta una @Query invece di un metodo derivato tipo findBy... perche la ricerca) Tj
+T*
+(attraversa piu entita e diventerebbe troppo lunga e poco leggibile.) Tj
+T*
+() Tj
+T*
+(E stato usato DISTINCT per evitare duplicati quando piu post dello stesso thread contengono la) Tj
+T*
+(parola cercata.) Tj
+T*
+() Tj
+T*
+(E stato mantenuto @EntityGraph per caricare autore e categoria del thread.) Tj
+T*
+() Tj
+T*
+(PostRepository.java) Tj
+T*
+() Tj
+T*
+(Nel repository dei post e stata aggiunta una query custom che cerca dentro il contenuto dei) Tj
+T*
+(post.) Tj
+T*
+ET
+
+endstream
+endobj
+12 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 13 0 R >>
+endobj
+13 0 obj
+<< /Length 2004 >>
+stream
+BT
+/F1 9.5 Tf
+12 TL
+48 794 Td
+() Tj
+T*
+(La query ritorna i post ordinati dal piu recente al meno recente.) Tj
+T*
+() Tj
+T*
+(Anche qui e stato usato @EntityGraph per caricare:) Tj
+T*
+() Tj
+T*
+(- autore del post;) Tj
+T*
+(- thread collegato;) Tj
+T*
+(- autore del thread;) Tj
+T*
+(- categoria del thread.) Tj
+T*
+() Tj
+T*
+(Questo e importante perche il service deve costruire una risposta completa senza inciampare in) Tj
+T*
+(problemi di lazy loading.) Tj
+T*
+() Tj
+T*
+(FRONTEND - FORUM) Tj
+T*
+() Tj
+T*
+(forum.model.ts) Tj
+T*
+() Tj
+T*
+(E stata aggiunta l'interfaccia:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(ForumSearchResult) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Serve a rappresentare lato TypeScript la risposta del backend.) Tj
+T*
+() Tj
+T*
+(Contiene gli stessi campi del DTO backend:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(threadId) Tj
+T*
+(title) Tj
+T*
+(categoryName) Tj
+T*
+(authorName) Tj
+T*
+(createdAt) Tj
+T*
+(postCount) Tj
+T*
+(matchedPostId) Tj
+T*
+(snippet) Tj
+T*
+(matchType) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(matchType puo valere:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+('TITLE' | 'POST') Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Questo permette al frontend di sapere se il risultato arriva dal titolo della discussione o) Tj
+T*
+(dal contenuto di un post.) Tj
+T*
+() Tj
+T*
+(forum.service.ts) Tj
+T*
+() Tj
+T*
+(E stato aggiunto/modificato il metodo:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(searchThreads\(search: string\)) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Questo metodo chiama l'endpoint backend:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(/api/forum/search?search=...) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+ET
+
+endstream
+endobj
+14 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 15 0 R >>
+endobj
+15 0 obj
+<< /Length 2335 >>
+stream
+BT
+/F1 9.5 Tf
+12 TL
+48 794 Td
+(e ritorna un array di ForumSearchResult.) Tj
+T*
+() Tj
+T*
+(threads-list.component.ts) Tj
+T*
+() Tj
+T*
+(Nel componente della pagina Forum sono stati aggiunti nuovi stati:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(searchTerm) Tj
+T*
+(searchResults) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(searchTerm contiene il testo scritto nella barra di ricerca.) Tj
+T*
+() Tj
+T*
+(searchResults contiene i risultati restituiti dal backend quando si cerca qualcosa.) Tj
+T*
+() Tj
+T*
+(La logica di caricamento ora funziona cosi:) Tj
+T*
+() Tj
+T*
+(- se searchTerm e vuoto, viene mostrata la lista normale dei thread;) Tj
+T*
+(- se searchTerm contiene testo, viene chiamata la ricerca backend e la lista normale viene) Tj
+T*
+(svuotata.) Tj
+T*
+() Tj
+T*
+(Questo evita di mostrare contemporaneamente risultati filtrati e lista completa.) Tj
+T*
+() Tj
+T*
+(Sono stati aggiunti anche helper per l'evidenziazione:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(getHighlightedParts\(...\)) Tj
+T*
+(isHighlightedPart\(...\)) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(getHighlightedParts divide il testo in pezzi, separando la parola cercata dal resto.) Tj
+T*
+() Tj
+T*
+(isHighlightedPart controlla se un pezzo corrisponde esattamente alla ricerca.) Tj
+T*
+() Tj
+T*
+(Nel template, se un pezzo corrisponde, riceve la classe CSS di highlight.) Tj
+T*
+() Tj
+T*
+(threads-list.component.html) Tj
+T*
+() Tj
+T*
+(Il template e stato aggiornato per mostrare due stati diversi.) Tj
+T*
+() Tj
+T*
+(Quando la searchbar e vuota:) Tj
+T*
+() Tj
+T*
+(- si vedono le categorie;) Tj
+T*
+(- si vede la lista normale delle discussioni.) Tj
+T*
+() Tj
+T*
+(Quando la searchbar contiene testo:) Tj
+T*
+() Tj
+T*
+(- si vedono i risultati di ricerca;) Tj
+T*
+(- ogni risultato e una card cliccabile;) Tj
+T*
+(- ogni card porta al thread corretto;) Tj
+T*
+(- viene mostrato lo snippet;) Tj
+T*
+(- la parola cercata viene evidenziata.) Tj
+T*
+() Tj
+T*
+(Ogni risultato mostra:) Tj
+T*
+() Tj
+T*
+(- categoria;) Tj
+T*
+(- se il risultato e nel titolo o in un post;) Tj
+T*
+(- titolo;) Tj
+T*
+(- snippet;) Tj
+T*
+(- autore;) Tj
+T*
+(- numero risposte;) Tj
+T*
+(- data.) Tj
+T*
+ET
+
+endstream
+endobj
+16 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 17 0 R >>
+endobj
+17 0 obj
+<< /Length 2167 >>
+stream
+BT
+/F1 9.5 Tf
+12 TL
+48 794 Td
+() Tj
+T*
+(threads-list.component.css) Tj
+T*
+() Tj
+T*
+(Sono stati aggiunti gli stili per:) Tj
+T*
+() Tj
+T*
+(- searchbar forum;) Tj
+T*
+(- card dei risultati;) Tj
+T*
+(- badge categoria;) Tj
+T*
+(- snippet;) Tj
+T*
+(- highlight della parola cercata.) Tj
+T*
+() Tj
+T*
+(E stata aggiunta anche una correzione importante su .search-results.) Tj
+T*
+() Tj
+T*
+(Nel CSS globale esisteva gia una classe .search-results pensata per un altro componente,) Tj
+T*
+(probabilmente con:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(position: absolute;) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Questo faceva apparire i risultati in fondo alla pagina, come se fossero in un footer.) Tj
+T*
+() Tj
+T*
+(Per risolvere, nel CSS del componente forum e stato aggiunto un override:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(.search-results {) Tj
+T*
+(  display: grid;) Tj
+T*
+(  gap: 1rem;) Tj
+T*
+(  position: static;) Tj
+T*
+(  width: auto;) Tj
+T*
+(  max-height: none;) Tj
+T*
+(  overflow: visible;) Tj
+T*
+(  padding: 0;) Tj
+T*
+(  margin: 0;) Tj
+T*
+(  border: 0;) Tj
+T*
+(  box-shadow: none;) Tj
+T*
+(  background: transparent;) Tj
+T*
+(}) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Questa modifica forza i risultati a stare nel flusso normale della pagina, subito sotto la) Tj
+T*
+(searchbar.) Tj
+T*
+() Tj
+T*
+(BUG E PROBLEMI RISOLTI) Tj
+T*
+() Tj
+T*
+(Swagger crea davvero dati) Tj
+T*
+() Tj
+T*
+(Quando si usa Try it out su Swagger, Swagger non simula la richiesta: la esegue davvero contro) Tj
+T*
+(il backend.) Tj
+T*
+() Tj
+T*
+(Per questo una chiamata POST /api/events ha creato davvero un evento visibile sul sito.) Tj
+T*
+() Tj
+T*
+(404 da browser ma 200 da Swagger) Tj
+T*
+() Tj
+T*
+(Il problema era il context path.) Tj
+T*
+() Tj
+T*
+(L'app backend non rispondeva semplicemente a:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(http://localhost:8080/api/events?search=jamming) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+ET
+
+endstream
+endobj
+18 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 19 0 R >>
+endobj
+19 0 obj
+<< /Length 2240 >>
+stream
+BT
+/F1 9.5 Tf
+12 TL
+48 794 Td
+(ma a un URL con context path:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(http://localhost:8080/suonacongigi/api/events?search=jamming) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Swagger usava gia l'URL corretto, il browser no.) Tj
+T*
+() Tj
+T*
+(Risultati Forum invisibili) Tj
+T*
+() Tj
+T*
+(La ricerca Forum funzionava lato backend e i risultati arrivavano in console.) Tj
+T*
+() Tj
+T*
+(Il problema era solo visivo: i risultati venivano posizionati in fondo alla pagina a causa) Tj
+T*
+(della classe globale .search-results.) Tj
+T*
+() Tj
+T*
+(La correzione e stata fatta nel CSS del componente forum con position: static e altri) Tj
+T*
+(override.) Tj
+T*
+() Tj
+T*
+(Search forum troppo generica) Tj
+T*
+() Tj
+T*
+(All'inizio la ricerca restituiva solo la discussione.) Tj
+T*
+() Tj
+T*
+(Questo non bastava, perche se una parola era dentro uno dei tanti post di una discussione,) Tj
+T*
+(l'utente non vedeva subito dove si trovava.) Tj
+T*
+() Tj
+T*
+(La soluzione e stata introdurre ForumSearchResultResponse con:) Tj
+T*
+() Tj
+T*
+(- matchedPostId;) Tj
+T*
+(- snippet;) Tj
+T*
+(- matchType.) Tj
+T*
+() Tj
+T*
+(Ora il frontend mostra il pezzo di testo in cui la parola e stata trovata.) Tj
+T*
+() Tj
+T*
+(TEST EFFETTUATI) Tj
+T*
+() Tj
+T*
+(Backend Eventi) Tj
+T*
+() Tj
+T*
+(Testato da Swagger.) Tj
+T*
+() Tj
+T*
+(La ricerca eventi restituisce solo eventi futuri che contengono la parola cercata in titolo,) Tj
+T*
+(descrizione o luogo.) Tj
+T*
+() Tj
+T*
+(Backend Forum) Tj
+T*
+() Tj
+T*
+(Testato da Swagger con JWT tramite pulsante Authorize.) Tj
+T*
+() Tj
+T*
+(L'inserimento della JWT in Swagger equivale a fare richieste autenticati, perche Swagger) Tj
+T*
+(aggiunge il token nell'header:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(Authorization: Bearer <token>) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Frontend Forum) Tj
+T*
+() Tj
+T*
+(Testato dal sito.) Tj
+T*
+() Tj
+T*
+(La ricerca:) Tj
+T*
+() Tj
+T*
+(- chiama correttamente il backend;) Tj
+T*
+(- riceve risultati;) Tj
+T*
+(- mostra le card nella posizione corretta;) Tj
+T*
+ET
+
+endstream
+endobj
+20 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 21 0 R >>
+endobj
+21 0 obj
+<< /Length 2298 >>
+stream
+BT
+/F1 9.5 Tf
+12 TL
+48 794 Td
+(- evidenzia la parola cercata;) Tj
+T*
+(- mostra snippet dei post.) Tj
+T*
+() Tj
+T*
+(GIT E BRANCH) Tj
+T*
+() Tj
+T*
+(Il lavoro frontend e stato portato sul branch:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(dev/SearchBar) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Situazione incontrata:) Tj
+T*
+() Tj
+T*
+(- alcune modifiche erano finite su main;) Tj
+T*
+(- il branch dev/SearchBar puntava inizialmente allo stato remoto;) Tj
+T*
+(- e stato necessario portare il commit di main dentro dev/SearchBar.) Tj
+T*
+() Tj
+T*
+(E stato fatto merge del lavoro da main dentro dev/SearchBar.) Tj
+T*
+() Tj
+T*
+(Poi e stato fatto push su:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(origin/dev/SearchBar) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(PULIZIA CARTELLA FRONTEND NESTED) Tj
+T*
+() Tj
+T*
+(Nel repository frontend compariva una cartella inutile:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(suonacongigifrontend) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(dentro il repository suonacongigifrontend.) Tj
+T*
+() Tj
+T*
+(Quella cartella era vuota/inutile e Git la vedeva come submodule rotto.) Tj
+T*
+() Tj
+T*
+(Il comando:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(git rm -r suonacongigifrontend) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(ha dato errore:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(fatal: could not lookup name for submodule 'suonacongigifrontend') Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Questo significa che Git la stava trattando come un submodule, ma mancava la configurazione) Tj
+T*
+(corretta in .gitmodules.) Tj
+T*
+() Tj
+T*
+(La rimozione corretta e:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(git update-index --force-remove suonacongigifrontend) Tj
+T*
+(Remove-Item -Recurse -Force .\\suonacongigifrontend) Tj
+T*
+(git add -A) Tj
+T*
+(git commit -m "Remove nested frontend submodule") Tj
+T*
+(git push origin dev/SearchBar) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+ET
+
+endstream
+endobj
+22 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 23 0 R >>
+endobj
+23 0 obj
+<< /Length 2129 >>
+stream
+BT
+/F1 9.5 Tf
+12 TL
+48 794 Td
+(Da comunicare al team:) Tj
+T*
+() Tj
+T*
+(la cartella nested suonacongigifrontend non contiene feature, non e codice applicativo, non va) Tj
+T*
+(mergiata come lavoro utile. Era un residuo strutturale/submodule rotto ed e stata rimossa) Tj
+T*
+(apposta.) Tj
+T*
+() Tj
+T*
+(PUNTI DI ATTENZIONE PER IL MERGE) Tj
+T*
+() Tj
+T*
+(Backend) Tj
+T*
+() Tj
+T*
+(Controllare conflitti in:) Tj
+T*
+() Tj
+T*
+(- EventController.java;) Tj
+T*
+(- EventService.java;) Tj
+T*
+(- EventRepository.java;) Tj
+T*
+(- ForumController.java;) Tj
+T*
+(- ForumService.java;) Tj
+T*
+(- ForumThreadRepository.java;) Tj
+T*
+(- PostRepository.java;) Tj
+T*
+(- ForumSearchResultResponse.java.) Tj
+T*
+() Tj
+T*
+(La parte Forum dipende dal nuovo DTO ForumSearchResultResponse.) Tj
+T*
+() Tj
+T*
+(Se durante il merge manca questo DTO, il backend non compila.) Tj
+T*
+() Tj
+T*
+(Frontend) Tj
+T*
+() Tj
+T*
+(Controllare conflitti in:) Tj
+T*
+() Tj
+T*
+(- forum.model.ts;) Tj
+T*
+(- forum.service.ts;) Tj
+T*
+(- threads-list.component.ts;) Tj
+T*
+(- threads-list.component.html;) Tj
+T*
+(- threads-list.component.css;) Tj
+T*
+(- event.service.ts;) Tj
+T*
+(- events-list.component.ts;) Tj
+T*
+(- events-list.component.html;) Tj
+T*
+(- events-list.component.css.) Tj
+T*
+() Tj
+T*
+(La ricerca Forum dipende dall'interfaccia ForumSearchResult.) Tj
+T*
+() Tj
+T*
+(Se manca il model, TypeScript segnala errori su searchResults.) Tj
+T*
+() Tj
+T*
+(CSS globale) Tj
+T*
+() Tj
+T*
+(Prestare attenzione alla classe:) Tj
+T*
+() Tj
+T*
+(----------------------------------------) Tj
+T*
+(.search-results) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(Esiste una classe globale con lo stesso nome.) Tj
+T*
+() Tj
+T*
+(Nel componente Forum e stato necessario sovrascriverla, altrimenti i risultati vengono) Tj
+T*
+(posizionati in fondo alla pagina.) Tj
+T*
+() Tj
+T*
+(Durante il merge, se questo override viene perso, il bug visivo ritorna.) Tj
+T*
+() Tj
+T*
+(Submodule/cartella nested) Tj
+T*
+() Tj
+T*
+(Se su GitHub o in locale ricompare:) Tj
+T*
+() Tj
+T*
+ET
+
+endstream
+endobj
+24 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents 25 0 R >>
+endobj
+25 0 obj
+<< /Length 1155 >>
+stream
+BT
+/F1 9.5 Tf
+12 TL
+48 794 Td
+(----------------------------------------) Tj
+T*
+(suonacongigifrontend/suonacongigifrontend) Tj
+T*
+(----------------------------------------) Tj
+T*
+() Tj
+T*
+(e probabilmente il vecchio submodule rotto.) Tj
+T*
+() Tj
+T*
+(Non va considerato parte della feature.) Tj
+T*
+() Tj
+T*
+(SCHEMA MENTALE RIUTILIZZABILE) Tj
+T*
+() Tj
+T*
+(Per aggiungere una searchbar in futuro, il pattern seguito e:) Tj
+T*
+() Tj
+T*
+(1. Controller: aggiungere @RequestParam\(required = false\) String search.) Tj
+T*
+(2. Service: decidere cosa fare se search e vuoto o valorizzato.) Tj
+T*
+(3. Repository: scrivere la query vera.) Tj
+T*
+(4. DTO/model: creare una risposta dedicata se la UI ha bisogno di dati diversi.) Tj
+T*
+(5. Frontend service: aggiungere il metodo che passa search come query param.) Tj
+T*
+(6. Component TS: aggiungere stato e metodo di ricerca.) Tj
+T*
+(7. Template HTML: aggiungere input e risultati.) Tj
+T*
+(8. CSS: sistemare visualizzazione e stati.) Tj
+T*
+(9. Test: Swagger per backend, browser per frontend.) Tj
+T*
+(10. Merge: controllare DTO, model, query e CSS.) Tj
+T*
+() Tj
+T*
+ET
+
+endstream
+endobj
+xref
+0 26
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000186 00000 n 
+0000000256 00000 n 
+0000000382 00000 n 
+0000002913 00000 n 
+0000003039 00000 n 
+0000005397 00000 n 
+0000005523 00000 n 
+0000007847 00000 n 
+0000007975 00000 n 
+0000010611 00000 n 
+0000010739 00000 n 
+0000012796 00000 n 
+0000012924 00000 n 
+0000015312 00000 n 
+0000015440 00000 n 
+0000017660 00000 n 
+0000017788 00000 n 
+0000020081 00000 n 
+0000020209 00000 n 
+0000022560 00000 n 
+0000022688 00000 n 
+0000024870 00000 n 
+0000024998 00000 n 
+trailer
+<< /Size 26 /Root 1 0 R >>
+startxref
+26206
+%%EOF

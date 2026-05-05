@@ -38,6 +38,34 @@ public class ForumService {
                 .map(this::toThreadSummary)
                 .collect(Collectors.toList()));
     }
+    
+    // Cerca nel forum usando una parola chiave inserita dall'utente.
+    // Restituisce risultati dettagliati, indicando se il match è nel titolo o nel contenuto di un post.
+    @Transactional(readOnly = true)
+    public List<ForumSearchResultResponse> searchThreads(String search) {
+        String cleanSearch = Objects.requireNonNull(search).trim();
+
+        if (cleanSearch.isBlank()) {
+            return List.of();
+        }
+
+        List<ForumSearchResultResponse> titleMatches = threadRepository.searchThreads(cleanSearch)
+                .stream()
+                .filter(thread -> thread.getTitle().toLowerCase().contains(cleanSearch.toLowerCase()))
+                .map(thread -> toSearchResult(thread, null, thread.getTitle(), "TITLE"))
+                .collect(Collectors.toList());
+
+        List<ForumSearchResultResponse> postMatches = postRepository.searchPosts(cleanSearch)
+                .stream()
+                .map(post -> toSearchResult(post.getThread(), post.getId(), post.getContent(), "POST"))
+                .collect(Collectors.toList());
+
+        titleMatches.addAll(postMatches);
+
+        return titleMatches;
+    }
+
+
 
     @Transactional(readOnly = true)
     public ThreadDetailResponse getThreadDetail(Long threadId, @Nullable String currentUsername) {
@@ -112,6 +140,21 @@ public class ForumService {
     }
 
     // --- Mapper Certificati (Strict Null Safety) ---
+
+    private ForumSearchResultResponse toSearchResult(ForumThread thread, Long matchedPostId, String snippet, String matchType) {
+        return Objects.requireNonNull(ForumSearchResultResponse.builder()
+            .threadId(Objects.requireNonNull(thread.getId()))
+            .title(Objects.requireNonNull(thread.getTitle()))
+            .categoryName(Objects.requireNonNull(thread.getCategory().getName()))
+            .authorName(Objects.requireNonNull(thread.getAuthor().getUsername()))
+            .createdAt(thread.getCreatedAt())
+            .postCount(postRepository.countByThreadId(thread.getId()))
+            .matchedPostId(matchedPostId)
+            .snippet(snippet)
+            .matchType(matchType)
+            .build());
+    }
+
 
     private CategoryResponse toCategoryResponse(ForumCategory c) {
         Long id = Objects.requireNonNull(c.getId());
