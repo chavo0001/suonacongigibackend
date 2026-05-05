@@ -65,6 +65,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                         System.out.println("************************************************************");
                         System.out.println("[SUONA CON GIGI-BOOTSTRAP]: Dati presenti, salto il seeding.");
                         System.out.println("************************************************************");
+                        return;
                 }
 
                 executeSeeding();
@@ -242,15 +243,18 @@ public class DatabaseSeeder implements CommandLineRunner {
                                         "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                                         "word VARCHAR(100) NOT NULL UNIQUE, " +
                                         "category VARCHAR(50), " +
-                                        "attiva BOOLEAN NOT NULL DEFAULT TRUE, " +
-                                        "creata_il TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
-                                        "INDEX idx_word (word), " +
-                                        "INDEX idx_attiva (attiva)) " +
+                                        "created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, " +
+                                        "updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, "
+                                        +
+                                        "INDEX idx_word (word)) " +
                                         "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
 
-                        System.out.println("*******************************************************************************");
-                        System.out.println("[SUONA CON GIGI-BOOTSTRAP]: Schema ricostruito. Seeding eseguito correttamente.");
-                        System.out.println("*******************************************************************************");
+                        System.out.println(
+                                        "*******************************************************************************");
+                        System.out.println(
+                                        "[SUONA CON GIGI-BOOTSTRAP]: Schema ricostruito. Seeding eseguito correttamente.");
+                        System.out.println(
+                                        "*******************************************************************************");
 
                 } catch (Exception e) {
                         throw new RuntimeException("Errore critico DDL: " + e.getMessage(), e);
@@ -396,8 +400,41 @@ public class DatabaseSeeder implements CommandLineRunner {
                                         "minkia", "culo", "cagata", "cagare", "puttanata", "troiata", "merdata",
                                         "merdoso", "bastardata", "figli di puttana", "figlia di puttana", "cazzone",
                                         "cazzoni", "stronzone", "stronzoni", "fottute", "fottuti", "fottuta", "fottute",
-                                        "porcodio", "negro", "negri", "zingaro", "zingari", "frocio", "froci", "lesbica", "lesbiche",
-                                        "ricchione", "ricchioni" 
+                                        "porcodio", "negro", "negri", "zingaro", "zingari", "frocio", "froci",
+                                        "ricchione", "ricchioni", "Generation", "Italy", "Stupidotto", "Brutto",
+                                        "Brutta", "Brutti", "Brutte", "Scemo", "Scema", "Scemi", "Sceme",
+                                        "Idiota", "Idiotessa", "Idioti", "Idiotesse", "Cretino", "Cretina", "Cretini",
+                                        "Cretine", "Deficiente", "Deficientessa", "Deficienti", "Deficienti",
+                                        "Imbecille", "Imbecilla", "Imbecilli", "Imbecille", "Pazzo", "Pazza", "Pazzi",
+                                        "Pazze", "Matto", "Matta", "Matti", "Matte", "Scemo del villaggio",
+                                        "Scema del villaggio",
+                                        "Scemi del villaggio", "Sceme del villaggio", "Testa di cazzo",
+                                        "Testa di minchia", "Testa di stronzo", "Testa di coglione", "Testa di merda",
+                                        "Testa di cazzi", "Testa di minchioni", "Testa di stronzoni",
+                                        "Testa di coglioni", "Testa di merdoso", "Figlio di puttanata",
+                                        "Figlio di troia", "Figlio di merda",
+                                        "Figlio di bastardata", "Figlio di figli di puttana",
+                                        "Figlio di figlia di puttana", "Cazzo di cane", "Cazzo di porco",
+                                        "Cazzo di dio", "Cazzo di madonna", "Cazzo di merda",
+                                        "Vaffanculo di cane", "Vaffanculo di porco", "Vaffanculo di dio",
+                                        "stupido", "stupida", "stupidi", "stupide", "brutto", "brutta", "brutti",
+                                        "brutte",
+                                        "scemo", "scema", "scemi", "sceme", "idiota", "idiotessa", "idioti",
+                                        "idiotesse", "cretino", "cretina", "cretini", "cretine",
+                                        "deficiente", "deficientessa", "deficienti", "deficienti", "imbecille",
+                                        "imbecilla", "imbecilli", "imbecille", "pazzo", "pazza", "pazzi", "pazze",
+                                        "matto", "matta", "matti", "matte",
+                                        "scemo del villaggio", "scema del villaggio", "scemi del villaggio",
+                                        "sceme del villaggio", "testa di cazzo", "testa di minchia", "testa di stronzo",
+                                        "testa di coglione", "testa di merda",
+                                        "testa di cazzi", "testa di minchioni", "testa di stronzoni",
+                                        "testa di coglioni", "testa di merdoso", "figlio di puttanata",
+                                        "figlio di troia", "figlio di merda",
+                                        "figlio di bastardata", "figlio di figli di puttana",
+                                        "figlio di figlia di puttana", "cazzo di cane", "cazzo di porco",
+                                        "cazzo di dio", "cazzo di madonna", "cazzo di merda",
+                                        "vaffanculo di cane", "vaffanculo di porco", "vaffanculo di dio",
+                                        "vaffanculo di madonna", "vaffanculo di merda"
                         };
 
                         int inserite = 0;
@@ -408,6 +445,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                                                                         .word(parola)
                                                                         .category("Insulto")
                                                                         .build());
+                                        inserite++;
                                 }
                         }
 
