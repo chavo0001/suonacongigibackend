@@ -33,7 +33,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByStatusOrderByEventDateAsc(Event.EventStatus status);
 
     @EntityGraph(attributePaths = {"createdBy"})
-    List<Event> findByStatusOrderByCreatedAtDesc(Event.EventStatus status);
+    List<Event> findByStatusOrderByCreatedByDesc(Event.EventStatus status);
         
     @EntityGraph(attributePaths = {"createdBy"}) // Anche in questo caso, carichiamo l'organizzatore insieme agli eventi filtrati.
     @Query("""
