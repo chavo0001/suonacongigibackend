@@ -181,6 +181,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 "event_date DATETIME NOT NULL, "         + 
                 "location VARCHAR(255) NOT NULL, "       + 
                 "max_seats INT NOT NULL, "               +
+                "status VARCHAR(20) NOT NULL DEFAULT 'PENDING', " +
                 "created_by_id BIGINT NOT NULL, "        +
                 "CONSTRAINT fk_event_creator "           + 
                 "FOREIGN KEY (created_by_id) "           + 

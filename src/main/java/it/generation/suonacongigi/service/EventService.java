@@ -40,6 +40,7 @@ public class EventService {
 
 
         return Objects.requireNonNull(events.stream()
+                .filter(e -> canUserSeeEvent(Objects.requireNonNull(e), currentUsername))
                 .map(e -> toResponse(Objects.requireNonNull(e), currentUsername))
                 .collect(Collectors.toList()));
     }
@@ -62,14 +63,9 @@ public class EventService {
     }
 
     @Transactional
-    public EventResponse create(EventRequest req, String adminUsername) {
-        User admin = userRepository.findByUsername(Objects.requireNonNull(adminUsername))
-                .orElseThrow(() -> new NoSuchElementException("Admin non trovato"));
-
-        System.out.println("Creazione evento da parte di admin: " + req.getDescription());
-        System.out.println("Creazione evento da parte di admin: " + req.getEventDate());
-        System.out.println("Creazione evento da parte di admin: " + req.getLocation());
-        System.out.println("Creazione evento da parte di admin: " + req.getMaxSeats()); 
+    public EventResponse create(EventRequest req, String username) {
+        User creator = userRepository.findByUsername(Objects.requireNonNull(username))
+                .orElseThrow(() -> new NoSuchElementException("Utente non trovato"));
 
         Event eventToSave = Event.builder()
                 .title(Objects.requireNonNull(req.getTitle()))
@@ -77,13 +73,14 @@ public class EventService {
                 .eventDate(Objects.requireNonNull(req.getEventDate()))
                 .location(Objects.requireNonNull(req.getLocation()))
                 .maxSeats(Objects.requireNonNull(req.getMaxSeats()))
-                .createdBy(admin)
+                .createdBy(creator)
+                .status(Event.EventStatus.PENDING)
                 .build();
 
         // Certifichiamo il salvataggio e la conversione
         Event saved = Objects.requireNonNull(eventRepository.save(Objects.requireNonNull(eventToSave)));
 
-        return toResponse(saved, adminUsername);
+        return toResponse(saved, username);
     }
 
     @Transactional
@@ -150,6 +147,41 @@ public class EventService {
         eventRepository.delete(getOrThrow(Objects.requireNonNull(id)));
     }
 
+    @Transactional
+    public EventResponse updateStatus(Long id, String statusStr, String adminUsername) {
+        Event event = getOrThrow(id);
+        
+        Event.EventStatus newStatus;
+        try {
+            newStatus = Event.EventStatus.valueOf(statusStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Status non valido: " + statusStr);
+        }
+        
+        event.setStatus(newStatus);
+        Event updated = eventRepository.save(event);
+        
+        return toResponse(updated, adminUsername);
+    }
+
+    private boolean canUserSeeEvent(Event event, @Nullable String username) {
+        // Gli admin vedono tutto
+        if (username != null) {
+            User user = userRepository.findByUsername(username).orElse(null);
+            if (user != null && user.getRole() == User.Role.ADMIN) {
+                return true;
+            }
+        }
+        
+        // Creatori vedono i propri eventi anche se non approvati
+        if (username != null && event.getCreatedBy().getUsername().equals(username)) {
+            return true;
+        }
+        
+        // Gli altri vedono solo gli eventi approvati
+        return event.getStatus() == Event.EventStatus.APPROVED;
+    }
+
     private EventResponse toResponse(Event event, @Nullable String currentUsername) {
         Long id = Objects.requireNonNull(event.getId());
         long booked = registrationRepository.countByEventId(id);
@@ -170,7 +202,17 @@ public class EventService {
                 .seatsAvailable((long) total - booked)
                 .createdBy(Objects.requireNonNull(event.getCreatedBy().getUsername()))
                 .registeredByCurrentUser(isRegistered)
+                .status(event.getStatus().name())
                 .build());
+    }
+
+    @Transactional(readOnly = true)
+    public List<EventResponse> findPendingEvents(String adminUsername) {
+        return eventRepository
+            .findByStatusOrderByCreatedAtDesc(Event.EventStatus.PENDING)
+            .stream()
+            .map(e -> toResponse(e, adminUsername))
+            .collect(Collectors.toList());
     }
 
     private Event getOrThrow(Long id) {

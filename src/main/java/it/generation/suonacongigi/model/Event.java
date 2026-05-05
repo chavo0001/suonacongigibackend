@@ -47,4 +47,16 @@ public class Event {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by_id", nullable = false)
     private User createdBy;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private EventStatus status = EventStatus.PENDING;
+    
+    public enum EventStatus {
+        PENDING,    // Just created, waiting admin review
+        APPROVED,   // Admin approved, visible to users
+        SUSPENDED,  // Admin suspended, hidden but not deleted
+        REFUSED     // Admin refused, hidden but not deleted
+    }
 }

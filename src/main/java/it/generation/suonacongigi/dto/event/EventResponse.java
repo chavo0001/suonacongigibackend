@@ -53,4 +53,8 @@ public class EventResponse {
     // Il campo "registeredByCurrentUser" indica se l'utente corrente è registrato all'evento.
     @Schema(description = "Indica se l'utente corrente è registrato all'evento", example = "true")
     private boolean registeredByCurrentUser;
+
+    // Il campo "status" rappresenta lo stato dell'evento (PENDING, APPROVED, SUSPENDED, REFUSED).
+    @Schema(description = "Event status", example = "APPROVED")
+    private String status;
 }

@@ -104,7 +104,6 @@ public class EventController extends BaseController {
         @ApiResponse(responseCode = "500", description = "Errore interno del server")
     })
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiEnvelope<EventResponse>> create(@Valid @RequestBody EventRequest req, @AuthenticationPrincipal User user) {
         // @Valid: Innesca il motore di validazione Bean Validation via Reflection sui metadati del DTO.
         String username = Objects.requireNonNull(Objects.requireNonNull(user).getUsername());
@@ -115,7 +114,7 @@ public class EventController extends BaseController {
 
         EventResponse data = eventService.create(Objects.requireNonNull(req), username);
 
-        return ok(data, "Evento creato con successo");
+        return ok(data, "Evento creato, in attesa di approvazione");
     }
 
     @Operation(summary = "Aggiorna un evento esistente (ADMIN)")
@@ -209,5 +208,27 @@ public class EventController extends BaseController {
 
             // Se il servizio non ha lanciato eccezioni, significa che l'eliminazione è avvenuta con successo
             return ok(null, "Evento eliminato con successo");
+    }
+
+    @Operation(summary = "Approva/Sospendi/Rifiuta evento (ADMIN)")
+    @PutMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiEnvelope<EventResponse>> updateStatus(
+        @PathVariable Long id,
+        @RequestParam String status,
+        @AuthenticationPrincipal User user) {
+        
+        EventResponse data = eventService.updateStatus(id, status, Objects.requireNonNull(user.getUsername()));
+        return ok(data, "Status aggiornato");
+    }
+
+    @Operation(summary = "Lista eventi in attesa di approvazione (ADMIN)")
+    @GetMapping("/pending")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiEnvelope<List<EventResponse>>> getPendingEvents(
+        @AuthenticationPrincipal User user) {
+    
+        List<EventResponse> data = eventService.findPendingEvents(user.getUsername());
+        return ok(data, "Eventi in attesa recuperati");
     }
 }
