@@ -3,6 +3,7 @@ package it.generation.suonacongigi.controller;
 import it.generation.suonacongigi.dto.common.ApiEnvelope;
 import it.generation.suonacongigi.dto.event.*;
 import it.generation.suonacongigi.model.User;
+import it.generation.suonacongigi.service.EventLikeService;
 import it.generation.suonacongigi.service.EventService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 import java.util.Objects;
+import it.generation.suonacongigi.service.EventLikeService;
 
 // Questo controller gestisce le operazioni CRUD sugli eventi, nonché la registrazione degli utenti agli eventi. Alcuni endpoint sono protetti e accessibili solo agli amministratori, mentre altri sono accessibili a tutti gli utenti autenticati.
 
@@ -27,24 +29,31 @@ public class EventController extends BaseController {
     // Iniezione del servizio che contiene la logica di business per gli eventi.
     private final EventService eventService;
 
-    // Endpoint pubblico per consultare la lista completa degli eventi. Gli utenti autenticati vedono solo quelli a cui possono accedere, mentre gli utenti non autenticati vedono solo quelli pubblici.
-    @Operation(summary = "Elenco eventi", description = "Restituisce la lista completa degli eventi. Gli utenti autenticati vedono solo quelli a cui possono accedere.")
-    @ApiResponses ({
-        @ApiResponse(responseCode = "200", description = "Lista recuperata con successo"),
-        @ApiResponse(responseCode = "500", description = "Errore interno del server")
-    })
+    private final EventLikeService eventLikeService;
+
+    @Operation(summary = "Elenco eventi", description = "Restituisce la lista completa degli eventi con lo stato del Like.")
     @GetMapping
     public ResponseEntity<ApiEnvelope<List<EventResponse>>> getAll(@AuthenticationPrincipal User user) {
-        // Se l'utente è autenticato, passiamo il suo username al servizio per filtrare gli eventi in base ai permessi. 
-        // Se l'utente non è autenticato, passiamo null e il servizio restituirà solo gli eventi pubblici.
+        // 1. Identifichiamo l'utente (se loggato)
         String username = user != null ? user.getUsername() : null;
 
-        // Il servizio si occupa di applicare la logica di filtraggio degli eventi in base all'utente. 
-        // Gli utenti autenticati vedono solo gli eventi a cui hanno accesso, 
-        // mentre gli utenti non autenticati vedono solo quelli pubblici.
-        List<EventResponse> data = eventService.findAll(username);
+        // 2. Recuperiamo la lista base degli eventi dal servizio eventi
+        List<EventResponse> events = eventService.findAll(username);
 
-        return ok(data, "Lista degli eventi recuperata con successo");
+        // 3. Se l'utente è autenticato, "accendiamo" i cuori già cliccati
+        if (username != null) {
+            // Chiediamo al nuovo servizio la lista degli ID degli eventi con like
+            List<Long> likedEventIds = eventLikeService.getLikedEventIds(username);
+            
+            // Per ogni evento, controlliamo se il suo ID è nella lista dei preferiti
+            events.forEach(event -> {
+                if (likedEventIds.contains(event.getId())) {
+                    event.setLiked(true); 
+                }
+            });
+        }
+
+        return ok(events, "Lista degli eventi recuperata con successo");
     }
 
     // Endpoint pubblico per consultare i dettagli di un evento specifico tramite ID. 

@@ -1,6 +1,7 @@
 it\generation\suonacongigi\service\package-info.class
 it\generation\suonacongigi\dto\forum\ThreadRequest.class
 it\generation\suonacongigi\service\UserService.class
+it\generation\suonacongigi\dto\user\BioRequest$BioRequestBuilder.class
 it\generation\suonacongigi\dto\auth\RegisterRequest.class
 it\generation\suonacongigi\dto\instrument\InstrumentResponse$InstrumentResponseBuilder.class
 it\generation\suonacongigi\model\Genre$GenreBuilder.class
@@ -44,6 +45,7 @@ it\generation\suonacongigi\repository\GenreRepository.class
 it\generation\suonacongigi\dto\artist\ArtistResponse.class
 it\generation\suonacongigi\dto\user\MusicalProfileRequest.class
 it\generation\suonacongigi\controller\GenreController.class
+it\generation\suonacongigi\dto\user\BioRequest.class
 it\generation\suonacongigi\dto\genre\GenreResponse.class
 it\generation\suonacongigi\repository\forum\PostRepository.class
 it\generation\suonacongigi\repository\ArtistRepository.class

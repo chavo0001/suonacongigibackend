@@ -7,8 +7,8 @@
             "mainClass": "it.generation.suonacongigi.SuonaConGigiApplication",
             "projectName": "suona-gigi",
             "env": {
-                "DB_USERNAME": "root",
-                "DB_PASSWORD": "Matematica96",
+                "DB_USERNAME": "mettere-utente-database",
+                "DB_PASSWORD": "mettere-password-database",
                 "JWT_SECRET": "SuonaConGigiSuperSecretKey2026JAVITA152!!!"
             }
         }

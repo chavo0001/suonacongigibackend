@@ -6,8 +6,6 @@ import it.generation.suonacongigi.dto.auth.RegisterRequest;
 import it.generation.suonacongigi.dto.user.MusicalProfileRequest;
 import it.generation.suonacongigi.model.MusicalProfile;
 import it.generation.suonacongigi.model.User;
-import it.generation.suonacongigi.model.VerificationToken;
-import it.generation.suonacongigi.repository.TokenRepository;
 import it.generation.suonacongigi.repository.user.UserRepository;
 import it.generation.suonacongigi.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-
-import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * ARCHITETTURA: Security Orchestrator.
@@ -34,10 +29,8 @@ import java.util.UUID;
 public class AuthService {
 
     private final UserRepository userRepository;
-    private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
-    private final EmailService emailService; 
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authManager;
 
@@ -80,11 +73,6 @@ public class AuthService {
         // 6. Salvataggio e risposta
         User savedUser = userRepository.save(userToSave);
         String token   = Objects.requireNonNull(jwtUtil.generateToken(savedUser));
-        System.out.println("Sto mandando la mail di conferma \n \n");
-        VerificationToken verToken = createToken(savedUser);
-        
-        // 7. invio email di verifica
-        emailService.sendVerificationMail(savedUser,verToken);
 
         return toAuthResponse(savedUser, token);
     }
@@ -120,38 +108,4 @@ public class AuthService {
                 .role(Objects.requireNonNull(user.getRole()).name())
                 .build());
     }
-
-    public void verify(String token){
-        VerificationToken verToken = tokenRepository.findByToken(token)
-        .orElseThrow(() ->new IllegalArgumentException("Token non valido"));
-
-        if(verToken.getExpiresAt().isBefore(LocalDateTime.now())){
-            throw new IllegalArgumentException("Token scaduto");
-        }
-
-        User user = verToken.getUser();
-        user.setStatus(true);
-        userRepository.save(user);
-
-        tokenRepository.delete(verToken);
-
-    }   
-
-
-
-
-
-    private VerificationToken createToken(User user){
-        String token = UUID.randomUUID().toString();
-        VerificationToken VerToken = new VerificationToken();
-
-        VerToken.setToken(token);
-        VerToken.setUser(user);
-        VerToken.setExpiresAt(LocalDateTime.now().plusHours(24));
-
-        tokenRepository.save(VerToken);
-
-        return VerToken;
-    }
-
 }

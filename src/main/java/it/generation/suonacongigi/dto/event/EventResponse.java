@@ -53,4 +53,9 @@ public class EventResponse {
     // Il campo "registeredByCurrentUser" indica se l'utente corrente è registrato all'evento.
     @Schema(description = "Indica se l'utente corrente è registrato all'evento", example = "true")
     private boolean registeredByCurrentUser;
+
+    //LIKED
+    // Indica se l'utente corrente ha messo like all'evento
+    @Schema(description = "Indica se l'utente corrente ha messo like all'evento", example = "true")
+    private boolean liked;
 }

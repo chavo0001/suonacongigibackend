@@ -93,8 +93,7 @@ public class DatabaseSeeder implements CommandLineRunner {
                 "email VARCHAR(100) NOT NULL UNIQUE, "   +
                 "password VARCHAR(255) NOT NULL, "       +
                 "role VARCHAR(20) NOT NULL, "            +
-                "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "+
-                "status BOOLEAN) ENGINE=InnoDB");
+                "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB");
 
             // Dominio dei Generi Musicali
             stmt.execute("CREATE TABLE genres ("         + 
@@ -110,13 +109,6 @@ public class DatabaseSeeder implements CommandLineRunner {
             stmt.execute("CREATE TABLE artists ("        + 
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY, " + 
                 "name VARCHAR(100) NOT NULL UNIQUE) ENGINE=InnoDB");
-
-            // VerificationToken 
-            stmt.execute("CREATE TABLE verification_Token ("          +
-                "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
-                "user_id VARCHAR(50) NOT NULL UNIQUE, " +
-                "token VARCHAR(250), " +
-                "expires_at TIMESTAMP) ENGINE=InnoDB");    
 
             // Profili Musicali (Relazioni 1:1 e N:M)
             stmt.execute("CREATE TABLE musical_profiles (" +
@@ -343,7 +335,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private User createUser(String username, String email, User.Role role) {
         return userRepository.save(User.builder()
                 .username(username).email(email).role(role)
-                .password(passwordEncoder.encode("suonacongigi")).status(true).build());
+                .password(passwordEncoder.encode("suonacongigi")).build());
     }
 
     // HELPER per la creazione delle entità Genre
