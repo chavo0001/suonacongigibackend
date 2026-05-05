@@ -143,6 +143,19 @@ public class ForumService {
         postRepository.delete(post);
     }
 
+    @Transactional
+    public void deleteThread(Long threadId, String username, boolean isAdmin) {
+        ForumThread thread = threadRepository.findById(Objects.requireNonNull(threadId))
+                .orElseThrow(() -> new NoSuchElementException("Thread non trovato"));
+
+        if (!thread.getAuthor().getUsername().equals(username) && !isAdmin) {
+            throw new IllegalStateException("Azione negata: non sei l'autore del thread");
+        }
+
+        postRepository.deleteAll(postRepository.findByThreadIdOrderByCreatedAtAsc(threadId));
+        threadRepository.delete(thread);
+    }
+
     // --- Mapper Certificati (Strict Null Safety) ---
 
     private ForumSearchResultResponse toSearchResult(

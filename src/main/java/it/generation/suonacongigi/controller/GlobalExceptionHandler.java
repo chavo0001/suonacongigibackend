@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -114,6 +115,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiEnvelope<Void>> handleAuth(BadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(ApiEnvelope.error("Credenziali non valide"));
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<ApiEnvelope<Void>> handleDisabled(DisabledException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ApiEnvelope.error("Account non attivo: verifica la tua email prima di accedere."));
     }
 
     @ExceptionHandler(AccessDeniedException.class)

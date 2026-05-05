@@ -176,4 +176,27 @@ public class ForumController extends BaseController {
         // Se il servizio non ha lanciato eccezioni, significa che l'eliminazione è avvenuta con successo
         return ok(null, "Post eliminato con successo");
     }
+
+    @Operation(summary = "Elimina discussione")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Discussione eliminata con successo"),
+        @ApiResponse(responseCode = "403", description = "Accesso negato"),
+        @ApiResponse(responseCode = "404", description = "Thread non trovato"),
+        @ApiResponse(responseCode = "500", description = "Errore interno del server")
+    })
+    @DeleteMapping("/threads/{id}")
+    public ResponseEntity<ApiEnvelope<Void>> deleteThread(
+        @Parameter(description = "ID del thread da eliminare", example = "42")
+        @PathVariable Long id,
+        @AuthenticationPrincipal User user) {
+
+        Objects.requireNonNull(user);
+
+        forumService.deleteThread(
+            Objects.requireNonNull(id),
+            Objects.requireNonNull(user.getUsername()),
+            user.getRole() == User.Role.ADMIN);
+
+        return ok(null, "Discussione eliminata con successo");
+    }
 }

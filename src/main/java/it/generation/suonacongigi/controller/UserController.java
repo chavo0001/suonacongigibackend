@@ -100,4 +100,17 @@ public class UserController extends BaseController {
 
         return ok(data, "Lista utenti recuperata con successo");
     }
+
+    @Operation(summary = "Elimina utente (ADMIN)", description = "Elimina definitivamente un utente dal sistema. Solo gli amministratori possono eseguire questa operazione.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Utente eliminato con successo"),
+        @ApiResponse(responseCode = "403", description = "Accesso negato: solo amministratori"),
+        @ApiResponse(responseCode = "404", description = "Utente non trovato")
+    })
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiEnvelope<Void>> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(Objects.requireNonNull(id));
+        return ok(null, "Utente eliminato con successo");
+    }
 }

@@ -92,7 +92,12 @@ public class UserService {
     private UserResponse toResponse(User user) {
         MusicalProfileResponse mpr = profileRepository.findByUserId(user.getId())
                 .map(this::toMusicalProfileResponse)
-                .orElseThrow(() -> new IllegalStateException("Profilo mancante per: " + user.getUsername()));
+                .orElse(MusicalProfileResponse.builder()
+                        .bio(null)
+                        .genres(Set.of())
+                        .instruments(Set.of())
+                        .favoriteArtists(Set.of())
+                        .build());
 
         return Objects.requireNonNull(UserResponse.builder()
                 .id(Objects.requireNonNull(user.getId()))
@@ -128,5 +133,12 @@ public class UserService {
     private User getOrThrow(String username) {
         return Objects.requireNonNull(userRepository.findByUsername(username)
                 .orElseThrow(() -> new NoSuchElementException("Utente non trovato: " + username)));
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) {
+        User user = userRepository.findById(Objects.requireNonNull(userId))
+                .orElseThrow(() -> new NoSuchElementException("Utente non trovato con id: " + userId));
+        userRepository.delete(user);
     }
 }
