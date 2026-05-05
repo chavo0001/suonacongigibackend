@@ -66,6 +66,9 @@ public class EventService {
     public EventResponse create(EventRequest req, String username) {
         User creator = userRepository.findByUsername(Objects.requireNonNull(username))
                 .orElseThrow(() -> new NoSuchElementException("Utente non trovato"));
+        Event.EventStatus status = creator.getRole() == User.Role.ADMIN
+                ? Event.EventStatus.APPROVED
+                : Event.EventStatus.PENDING;
 
         Event eventToSave = Event.builder()
                 .title(Objects.requireNonNull(req.getTitle()))
@@ -74,7 +77,7 @@ public class EventService {
                 .location(Objects.requireNonNull(req.getLocation()))
                 .maxSeats(Objects.requireNonNull(req.getMaxSeats()))
                 .createdBy(creator)
-                .status(Event.EventStatus.PENDING)
+                .status(status)
                 .build();
 
         // Certifichiamo il salvataggio e la conversione

@@ -1,8 +1,8 @@
 package it.generation.suonacongigi.service;
 
 import it.generation.suonacongigi.repository.ParolaBanditaRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.AbstractMap;
@@ -19,21 +19,34 @@ public class CensuraService {
 
     private final ParolaBanditaRepository parolaBanditaRepository;
     private final List<Map.Entry<String, Pattern>> patternCache = new ArrayList<>();
+    private boolean cacheInizializzata = false;
 
-    @PostConstruct
-    public void inizializzaCache() {
-        List<String> parole = parolaBanditaRepository.findAllParoleAttive();
-        for (String parola : parole) {
-            String separatore = "[\\s.\\-_*|]*";
-            StringBuilder regexBuilder = new StringBuilder();
-            for (char c : parola.toCharArray()) {
-                regexBuilder.append(Pattern.quote(String.valueOf(c)));
-                regexBuilder.append(separatore);
-            }
-            String regex = regexBuilder.substring(0, regexBuilder.length() - separatore.length());
-            Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-            patternCache.add(new AbstractMap.SimpleEntry<>(parola, p));
+    public synchronized void inizializzaCache() {
+        if (cacheInizializzata) {
+            return;
         }
+
+        try {
+            List<String> parole = parolaBanditaRepository.findAllParoleAttive();
+            patternCache.clear();
+            for (String parola : parole) {
+                patternCache.add(new AbstractMap.SimpleEntry<>(parola, creaPattern(parola)));
+            }
+            cacheInizializzata = true;
+        } catch (DataAccessException e) {
+            patternCache.clear();
+        }
+    }
+
+    private Pattern creaPattern(String parola) {
+        String separatore = "[\\s.\\-_*|]*";
+        StringBuilder regexBuilder = new StringBuilder();
+        for (char c : parola.toCharArray()) {
+            regexBuilder.append(Pattern.quote(String.valueOf(c)));
+            regexBuilder.append(separatore);
+        }
+        String regex = regexBuilder.substring(0, regexBuilder.length() - separatore.length());
+        return Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
     }
 
     public String filtra(String testo) {
@@ -41,6 +54,7 @@ public class CensuraService {
             return "";
         }
 
+        inizializzaCache();
         String risultato = testo;
 
         for (Map.Entry<String, Pattern> entry : patternCache) {

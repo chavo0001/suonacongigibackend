@@ -334,7 +334,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
             // 6. EVENTI & FORUM (Per rendere il DB "vivo")
             Event jam = createEvent("Summer Jam Session", "Evento aperto a tutti i generi.", 
-                LocalDateTime.now().plusMonths(1), "Parco della Musica", 50, admin);
+                LocalDateTime.now().plusMonths(1), "Parco della Musica", 50, admin, Event.EventStatus.APPROVED);
             
             createRegistration(jam, rocker);
             createRegistration(jam, jazzer);
@@ -464,10 +464,10 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     // HELPER per la creazione degli Eventi, che gestisce la relazione con l'utente creatore
-    private Event createEvent(String title, String desc, LocalDateTime date, String loc, int seats, User creator) {
+    private Event createEvent(String title, String desc, LocalDateTime date, String loc, int seats, User creator, Event.EventStatus status) {
         return eventRepository.save(Event.builder()
                 .title(title).description(desc).eventDate(date)
-                .location(loc).maxSeats(seats).createdBy(creator).build());
+                .location(loc).maxSeats(seats).createdBy(creator).status(status).build());
     }
 
     // HELPER per la creazione delle Registrazioni agli Eventi, che gestisce la relazione con evento e utente
