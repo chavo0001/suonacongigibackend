@@ -209,7 +209,7 @@ public class EventService {
     @Transactional(readOnly = true)
     public List<EventResponse> findPendingEvents(String adminUsername) {
         return eventRepository
-            .findByStatusOrderByCreatedAtDesc(Event.EventStatus.PENDING)
+            .findByStatusOrderByCreatedByDesc(Event.EventStatus.PENDING)
             .stream()
             .map(e -> toResponse(e, adminUsername))
             .collect(Collectors.toList());
