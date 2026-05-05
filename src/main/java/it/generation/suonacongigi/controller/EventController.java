@@ -100,7 +100,6 @@ public class EventController extends BaseController {
         @ApiResponse(responseCode = "500", description = "Errore interno del server")
     })
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiEnvelope<EventResponse>> create(@Valid @RequestBody EventRequest req, @AuthenticationPrincipal User user) {
         // @Valid: Innesca il motore di validazione Bean Validation via Reflection sui metadati del DTO.
         String username = Objects.requireNonNull(Objects.requireNonNull(user).getUsername());
@@ -135,6 +134,20 @@ public class EventController extends BaseController {
         return ok(data, "Evento aggiornato con successo");
     }
 
+    @Operation(summary = "Approva/Sospendi/Rifiuta evento (ADMIN)")
+    @PutMapping("/{id}/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiEnvelope<EventResponse>> updateStatus(
+        @PathVariable Long id,
+        @RequestParam String status,
+        @AuthenticationPrincipal User user) {
+        
+        EventResponse data = eventService.updateStatus(    
+            Objects.requireNonNull(id), 
+            Objects.requireNonNull(status), 
+            Objects.requireNonNull(user.getUsername()));
+        return ok(data, "Status aggiornato");
+    }
     // Endpoint protetto per registrare un utente a un evento tramite ID.
     @Operation(summary = "Registra a evento", description = "Permette a un utente autenticato di registrarsi a un evento. Restituisce 200 OK se la registrazione è avvenuta con successo, 400 Bad Request se l'utente è già registrato o se l'evento è al completo.")
     @ApiResponses ({

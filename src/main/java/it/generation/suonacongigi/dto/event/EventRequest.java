@@ -37,5 +37,10 @@ public class EventRequest {
     @Schema(description = "Numero massimo di posti disponibili per l'evento", example = "100")
     @NotNull @Positive
     private Integer maxSeats;
+
+    // Il campo "status" rappresenta lo stato dell'evento (PENDING, APPROVED, REJECTED).
+    @Schema(description = "Event status", example = "APPROVED")
+    private String status;
+
 }
 

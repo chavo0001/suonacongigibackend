@@ -40,6 +40,19 @@ public class Event {
     @Column(name = "max_seats", nullable = false)
     private Integer maxSeats;
 
+    // Il campo "status" rappresenta lo stato dell'evento (PENDING, APPROVED, REJECTED). Di default è PENDING.
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private EventStatus status = EventStatus.PENDING;
+    
+    public enum EventStatus {
+        PENDING,    // Just created, waiting admin review
+        APPROVED,   // Admin approved, visible to users
+        SUSPENDED,  // Admin suspended, hidden but not deleted
+        REFUSED     // Admin refused, hidden but not deleted
+    }
+
     // Il campo "createdBy" rappresenta l'utente che ha creato l'evento. È obbligatorio.
     // La relazione è ManyToOne perché un utente può creare molti eventi, ma ogni evento ha un solo creatore.
     // Usiamo FetchType.LAZY per evitare di caricare l'intero oggetto User quando carichiamo un evento,

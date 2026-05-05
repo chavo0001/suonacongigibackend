@@ -13,7 +13,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.5.14</version> 
+    <version>3.4.2</version> 
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -21,7 +21,7 @@
   <artifactId>suona-gigi</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <name>suona-gigi</name>
-  <description>Suona con Gigi - Project Work JAVITA152</description>
+  <description>Suona con Gigi – Project Work JAVITA152</description>
 
   <properties>
     <!-- MECCANICA: Modern Runtime. Usiamo l'ultima LTS (Long Term Support) per performance e Virtual Threads. -->
@@ -36,15 +36,6 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
-
-
-    <!-- Mail service di SpringBoot-->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-mail</artifactId>
-    </dependency>
-
-
 
     <!-- ARCHITETTURA: Security Engine. Il motore che gestisce la Filter Chain e il SecurityContext. -->
     <dependency>

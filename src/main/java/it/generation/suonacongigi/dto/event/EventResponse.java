@@ -46,6 +46,10 @@ public class EventResponse {
     @Schema(description = "Numero di posti disponibili per l'evento", example = "50")
     private long seatsAvailable;
 
+    // Il campo "status" rappresenta lo stato dell'evento (PENDING, APPROVED, REJECTED).
+    @Schema(description = "Event status", example = "APPROVED")
+    private String status;
+
     // Il campo "createdBy" rappresenta l'utente che ha creato l'evento.
     @Schema
     private String createdBy;

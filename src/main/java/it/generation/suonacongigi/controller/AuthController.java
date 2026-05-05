@@ -6,25 +6,19 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.generation.suonacongigi.dto.auth.AuthResponse;
-
 import it.generation.suonacongigi.dto.auth.LoginRequest;
 import it.generation.suonacongigi.dto.auth.RegisterRequest;
 import it.generation.suonacongigi.dto.common.ApiEnvelope;
 import it.generation.suonacongigi.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
+import org.springframework.http.ResponseEntity; 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Objects;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 // Questo controller gestisce le operazioni di registrazione e login degli utenti, restituendo un Token JWT in caso di successo.
 
@@ -69,15 +63,5 @@ public class AuthController extends BaseController {
         AuthResponse data = authService.login(cleanReq);
         // Il controller si limita a delegare la logica di login al servizio, restituendo un ResponseEntity con il risultato. La validazione dei dati avviene automaticamente grazie alle annotazioni di validazione sui campi del DTO.
         return ok(data, "Login effettuato con successo");
-    
     }
-
-    @GetMapping("/verify")
-    public ResponseEntity<ApiEnvelope<String>> verify(@RequestParam @NonNull String token) {
-        System.out.println("Verfica del token in corso \n\n");
-        authService.verify(token);
-        return ok(null, "Email verificata");
-    }
-    
-
 }

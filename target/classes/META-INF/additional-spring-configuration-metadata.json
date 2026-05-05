@@ -1,27 +1,15 @@
-{"properties": [
-  {
-    "name": "app.db.seed-on-start",
-    "type": "java.lang.String",
-    "description": "A description for 'app.db.seed-on-start'"
-  },
-  {
-    "name": "app.jwt.secret",
-    "type": "java.lang.String",
-    "description": "A description for 'app.jwt.secret'"
-  },
-  {
-    "name": "app.jwt.expiration-ms",
-    "type": "java.lang.String",
-    "description": "A description for 'app.jwt.expiration-ms'"
-  },
-  {
-    "name": "springdoc.swagger-ui.models-sorter",
-    "type": "java.lang.String",
-    "description": "A description for 'springdoc.swagger-ui.models-sorter'"
-  },
-  {
-    "name": "app.base-url",
-    "type": "java.lang.String",
-    "description": "A description for 'app.base-url'"
-  }
-]}
+{"properties": [{
+  "name": "app.db.seed-on-start",
+  "type": "java.lang.String",
+  "description": "A description for 'app.db.seed-on-start'"
+},
+{
+  "name": "app.jwt.expiration-ms",
+  "type": "java.lang.String",
+  "description": "A description for 'app.jwt.expiration-ms'"
+},
+{
+  "name": "app.jwt.secret",
+  "type": "java.lang.String",
+  "description": "A description for 'app.jwt.secret'"
+}]}

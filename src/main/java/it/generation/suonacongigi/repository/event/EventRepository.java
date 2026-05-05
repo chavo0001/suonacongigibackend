@@ -25,4 +25,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     // evitando così il problema N+1 query quando si accede ai dati dell'organizzatore associato a ciascun evento.
     @EntityGraph(attributePaths = {"createdBy"})
     List<Event> findByEventDateAfterOrderByEventDateAsc(LocalDateTime date);
+
+    @EntityGraph(attributePaths = {"createdBy"})
+    List<Event> findByStatusOrderByEventDateAsc(Event.EventStatus status);
 }
