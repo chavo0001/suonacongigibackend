@@ -236,6 +236,20 @@ public class DatabaseSeeder implements CommandLineRunner {
                 "FOREIGN KEY (author_id) "                         + 
                 "REFERENCES users(id)) ENGINE=InnoDB");
 
+            stmt.execute("CREATE TABLE IF NOT EXISTS event_likes (" + 
+                    "id BIGINT AUTO_INCREMENT PRIMARY KEY," +
+                    "event_id BIGINT NOT NULL," +
+                    "user_id BIGINT NOT NULL," +
+                    "liked_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+                    "UNIQUE KEY uk_event_likes_event_user (event_id, user_id)," +
+                    "CONSTRAINT fk_event_likes_event " +
+                    "FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE, " +
+                    "CONSTRAINT fk_event_likes_user " +
+                       "FOREIGN KEY (user_id) REFERENCES users(id)" + 
+                        "ON DELETE CASCADE" +
+            ") ENGINE=InnoDB");
+            
+            
             stmt.execute("CREATE TABLE parole_bandite (" +
                 "id BIGINT AUTO_INCREMENT PRIMARY KEY, " +
                 "word VARCHAR(100) NOT NULL UNIQUE, " +
