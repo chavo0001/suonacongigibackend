@@ -70,7 +70,6 @@ public class UserController extends BaseController {
         List<UserResponse> data = userService.findAll();
         return ok(data, "Lista utenti recuperata con successo");
     }
-
     @Operation(summary = "Elimina utente (ADMIN)", description = "Elimina definitivamente un utente dal sistema. Solo gli amministratori possono eseguire questa operazione.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Utente eliminato con successo"),
